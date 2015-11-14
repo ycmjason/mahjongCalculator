@@ -15,6 +15,9 @@ Class Collection{
   }
 
   public function get($id){
+    if(!is_numeric($id)){
+      return null;
+    }
     $filtered = array_filter($this->records, function($record) use($id) {
       return $record['id'] === intval($id);
     });
@@ -107,6 +110,12 @@ function checkRequiredPostParams($names){
   return true;
 }
 
+function getTarget($id){
+  global $people,$allocations;
+  $allocation = $allocations->get($id);
+  return $people->getWithoutCredentials($allocation['target_id']);
+}
+
 switch($action){
   case 'getPeople':
     echoJson($people->getAllWithoutCredentials());
@@ -132,15 +141,14 @@ switch($action){
       die("Failed matching password.");
     }
 
-    // fetch target id
-    $allocation = $allocations->get($id);
-    if($allocation==null){
+    // fetch target
+    $target = getTarget($id);
+    if($target==null){
       die("No allocation found.");
     }
-    $target_id = $allocation['target_id'];
 
     // return profile
-    echoJson($people->getWithoutCredentials($target_id));
+    echoJson($target);
     break;
   case 'addPerson':
     if(!checkRequiredPostParams(array("name", "facebook", "image"))) break;
@@ -189,15 +197,39 @@ switch($action){
     //shuffle the list
     shuffle($untargeted_list);
 
-    //select one guy randomly
-    $randomSelection = mt_rand(0, count($untargeted_list)-1);
-    for($i=0; $i<$randomSelection; $i++){
-      next($untargeted_list);
+    $target_person = current($untargeted_list);
+
+    //make sure no loop is made until the last person
+    if(count($untargeted_list)>1){
+      $person_pointer = $target_person;
+      while(($person_pointer = getTarget($person_pointer['id']))!=null){
+        if($person_pointer['id']==$id){
+          $target_person=next($untargeted_list);
+          $person_pointer=$target_person;
+        }
+      }
     }
 
-    $target_person = current($untargeted_list);
     $allocations->add($id, $target_person['id']);
 
+    break;
+  case 'showAlloc':
+    $countingArray=array();
+    $peopleCount = count($people->getAll());
+    do{
+      echo "=============================\n";
+      for($i=0; $i<$peopleCount; $i++){
+        if(!in_array($i, $countingArray)){
+          $first = $people->getWithoutCredentials($i);
+          break;
+        }
+      }
+      $current = $first;
+      do{
+        print_r($current);
+        array_push($countingArray, $current['id']);
+      }while(($current=getTarget($current['id']))!=$first);
+    }while(count($countingArray)<$peopleCount);
     break;
 }
 ?>

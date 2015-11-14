@@ -23,6 +23,11 @@
           <div class="col-sm-2">
           </div>
           <div class="col-sm-8">
+<p>
+            A Christmas is not Christmas without giving or recieving gifts. You are going to be someone's secret santa and buy a gift for him/her. Relax, someone is going to be your secret santa too! Login to see who you are going to buy gift to!
+</p>
+The budget of this year's gift is around <strong>&pound;10</strong>.
+            <hr>
             <form>
               <div class="form-group">
                 <label for="person">Your name</label>
@@ -81,7 +86,9 @@
         </div>
       </main>
       <footer>
-        <div class="text-right"> <em>All built from scratch by Jason Yu &copy;.</em></div>
+        
+        <div class="text-right"> <em>This project is open source. Available on <a href="https://github.com/ycmjason/mbssas" target="_blank">github</a>.</div>
+        <div class="text-right"> <em>All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.</em></div>
       </footer>
     </section>
   </body>
