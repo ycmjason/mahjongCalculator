@@ -31,8 +31,7 @@ The budget of this year's gift is around <strong>&pound;10</strong>.
             <form>
               <div class="form-group">
                 <label for="person">Your name</label>
-                <select id="person" class="form-control" ng-model="id">
-                  <option ng-repeat="person in people" value="{{person.id}}">{{person.name}}</option>
+                <select id="person" class="form-control" ng-model="id" ng-options="person.name for person in people | orderBy: 'name' track by person.id">
                 </select>
               </div>
 

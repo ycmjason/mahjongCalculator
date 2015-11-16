@@ -15,11 +15,12 @@ ssas.controller('indexController', function ($scope, $http, $location) {
     });
   }
   $scope.login = function(){
-    var id = $scope.id;
+    var id = $scope.id.id;
     var password = $scope.password;
     var confirm = $scope.confirm;
-    $http.post(api('setPassword'), {'id': id, 'password': password}).success(function(){
-      $http.post(api('allocate'), {'id': id}).success(function(res){
+    $http.post(api('setPassword'), {'id': id, 'password': password}).success(function(r){
+      $http.post(api('allocate'), {'id': id, 'password': password}).success(function(res){
+        console.log({'id': id, 'password': password, 'confirm': confirm});
         $http.post(api('getTarget'), {'id': id, 'password': password, 'confirm': confirm}).success(function(target){
           if(typeof(target)=="string"){
             $scope.errormsg = target;
