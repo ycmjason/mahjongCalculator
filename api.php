@@ -216,8 +216,12 @@ switch($action){
   case 'showAlloc':
     $countingArray=array();
     $peopleCount = count($people->getAll());
+    $allocCount = count($allocations->getAll());
+    if($allocCount!==$peopleCount){
+      die("You can only view this after everyone has been allocated.<br> Current allocations: ".$allocCount."/".$peopleCount.".");
+    }
     do{
-      echo "=============================\n";
+      echo "=============================<br>";
       for($i=0; $i<$peopleCount; $i++){
         if(!in_array($i, $countingArray)){
           $first = $people->getWithoutCredentials($i);
@@ -226,10 +230,13 @@ switch($action){
       }
       $current = $first;
       do{
-        print_r($current);
+        echo $current['name']." => ";
         array_push($countingArray, $current['id']);
       }while(($current=getTarget($current['id']))!=$first);
     }while(count($countingArray)<$peopleCount);
+    break;
+  case 'getNumberOfPeopleLoggedIn':
+    echo count($allocations->getAll());
     break;
 }
 ?>

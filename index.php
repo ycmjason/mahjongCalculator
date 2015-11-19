@@ -26,7 +26,13 @@
 <p>
             A Christmas is not Christmas without giving or recieving gifts. You are going to be someone's secret santa and buy a gift for him/her. Relax, someone is going to be your secret santa too! Login to see who you are going to buy gift to!
 </p>
+<p>
 The budget of this year's gift is around <strong>&pound;10</strong>.
+</p>
+<p>
+Current statistics:<br>
+People who has logged in and found out their master: <strong>{{stat.numberOfPeopleLoggedIn}}/{{stat.numberOfPeople}}</strong><br>
+</p>
             <hr>
             <form>
               <div class="form-group">
@@ -39,7 +45,7 @@ The budget of this year's gift is around <strong>&pound;10</strong>.
                 <label for="password">Your password</label>
                 <input class="form-control" id="password" type="password" ng-model="password">
                 <p class="help-block">If you have never login before, this is where you set up your password.<br>
-                This is to make sure no other people peek who is your master.<br>
+                This is to make sure no other people peek who your master is.<br>
                 Although passwords are encrypted, try to AVOID using any of your common passwords as this system might be quite insecure.</p>
               </div>
 

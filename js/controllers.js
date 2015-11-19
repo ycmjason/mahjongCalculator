@@ -5,8 +5,13 @@ var api = function(action){
 };
 
 ssas.controller('indexController', function ($scope, $http, $location) {
+  $scope.stat = {};
   $http.get(api('getPeople')).success(function(res){
     $scope.people = res;
+    $scope.stat.numberOfPeople = res.length;
+  });
+  $http.get(api('getNumberOfPeopleLoggedIn')).success(function(n){
+    $scope.stat.numberOfPeopleLoggedIn=n;
   });
   if($location.search().id!==undefined){
     $http.post(api('getPerson'), {'id': $location.search().id}).success(function(person){
