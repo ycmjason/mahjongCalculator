@@ -1,4 +1,4 @@
-# Mahjong calculator
+# Mahjong score calculator
 
 Intro
 =====

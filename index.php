@@ -161,7 +161,7 @@
       </main>
       <footer>
         
-        <div class="text-right"> <em>This project is open source. Available on <a href="https://github.com/ycmjason/mbssas" target="_blank">github</a>.</div>
+        <div class="text-right"> <em>This project is open source. Available on <a href="https://github.com/ycmjason/mahjongCalculator" target="_blank">github</a>.</div>
         <div class="text-right"> <em>All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.</em></div>
       </footer>
     </section>
