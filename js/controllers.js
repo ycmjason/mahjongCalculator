@@ -1,39 +1,205 @@
-var ssas = angular.module('ssas', []);
+"use strict";
+var DEFAULT_PLAYER = 4;
+var MAX_PLAYER = 8;
+//var BASESCORE = $scope.BASESCORE = 2;
+var BASESCORE = 2;
+var HALF_SPICE_FROM = 4;
+var MIN_MAX_FARN = 1;
+var MAX_MAX_FARN = 13;
 
-var api = function(action){
-  return './api.php?action='+action;
+var range = function(startNumber, endNumber){
+  var arr = new Array();
+  for(var i=0; i<endNumber - startNumber + 1; ++i){
+    arr[i] = startNumber+i;
+  }
+  return arr;
 };
 
-ssas.controller('indexController', function ($scope, $http, $location) {
-  $scope.stat = {};
-  $http.get(api('getPeople')).success(function(res){
-    $scope.people = res;
-    $scope.stat.numberOfPeople = res.length;
+var mjCal = angular.module('mjCal', ['chart.js']);
+
+mjCal.directive("fileread", [function () {
+    return {
+        scope: {
+            fileread: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                var reader = new FileReader();
+                reader.onload = function (loadEvent) {
+                    scope.$apply(function () {
+                        scope.fileread = loadEvent.target.result;
+                    });
+                }
+                reader.readAsText(changeEvent.target.files[0]);
+            });
+        }
+    }
+}]);
+
+
+mjCal.controller('indexController', function ($scope) {
+  $scope.DEFAULT_PLAYER = DEFAULT_PLAYER;
+  $scope.MAX_PLAYER = MAX_PLAYER;
+  $scope.MIN_MAX_FARN = MIN_MAX_FARN;
+  $scope.MAX_MAX_FARN = MAX_MAX_FARN;
+
+  $scope.range = range;
+  
+  $scope.$watch('uploadJson', function(json){
+    json = angular.fromJson(json);
+    if(!MJData.isCorrupted(json)){
+      $scope.mjData = new MJData();
+      json.players.map(function(player){
+        return new Player(player.name);
+      }).forEach(function(player){
+        $scope.mjData.addPlayer(player);
+      });
+
+      json.rounds.map(function(round){
+        var newRound = new Round();
+        round.wus.forEach(function(wu){
+          newRound.addWu(wu.playerId, wu.farn);
+        });
+        round.losers.forEach(function(loserId){
+          newRound.addLoser(loserId);
+        });
+        return newRound;
+      }).forEach(function(round){
+        $scope.mjData.addRound(round); 
+      });
+      $scope.started = true;
+      resetRound();
+    }
   });
-  $http.get(api('getNumberOfPeopleLoggedIn')).success(function(n){
-    $scope.stat.numberOfPeopleLoggedIn=n;
-  });
-  if($location.search().id!==undefined){
-    $http.post(api('getPerson'), {'id': $location.search().id}).success(function(person){
-      console.log(person);
-      $scope.target = person;
+
+  $scope.numberOfPlayer = DEFAULT_PLAYER;
+  $scope.playerNames = [];
+
+  $scope.started = false;
+  $scope.mjData = new MJData();
+  $scope.startGame = function(){
+    $scope.started = true;
+    $scope.playerNames.forEach(function(playerName){
+      $scope.mjData.addPlayer(new Player(playerName));
+    });
+    // all start from 0
+    resetRound();
+    saveRound();
+    // reset round
+    resetRound();
+  };
+
+
+  /* game started */
+  var round;
+  var saveRound = function(){
+    $scope.mjData.addRound(round);
+  };
+  var resetRound = $scope.resetRound = function(){
+    round = $scope.round = new Round();
+  };
+  $scope.cancelLastRound = function(){
+    if($scope.mjData.rounds.length>1)
+      $scope.mjData.rounds.pop();
+  }
+  var generateSelfTouchedMenu = function(){
+    $scope.selfTouchedMenu = [];
+    $scope.mjData.players.forEach(function(player, i){
+      $scope.selfTouchedMenu.push(selfTouchedMenu(i));
     });
   }
-  $scope.login = function(){
-    var id = $scope.id.id;
-    var password = $scope.password;
-    var confirm = $scope.confirm;
-    $http.post(api('setPassword'), {'id': id, 'password': password}).success(function(r){
-      $http.post(api('allocate'), {'id': id, 'password': password}).success(function(res){
-        console.log({'id': id, 'password': password, 'confirm': confirm});
-        $http.post(api('getTarget'), {'id': id, 'password': password, 'confirm': confirm}).success(function(target){
-          if(typeof(target)=="string"){
-            $scope.errormsg = target;
-          }else{
-            $scope.target = target;
-          }
-        });
-      });
-    });
+  var selfTouchedMenu = function(playerId){
+    var restPlayers = angular.copy($scope.mjData.players);
+    restPlayers.splice(playerId, 1);
+
+    var options = [];
+    for(var i = 0; i < restPlayers.length; i++){
+      for(var j = i; j < restPlayers.length; j++){
+        for(var k = j; k < restPlayers.length; k++){
+          if(i == j ||
+             i == k ||
+             j == k) continue;
+          options.push([restPlayers[i], restPlayers[j], restPlayers[k]]);
+        }
+      }
+    }
+    return options;
   };
+  $scope.addPlayer = function(){
+    $scope.mjData.addPlayer(new Player(""));
+  }
+  $scope.someoneIsEating = function(){
+    return $scope.numberOfPeopleEating()>0;
+  };
+  $scope.numberOfPeopleEating = function(){
+    return round.wus.length;
+  };
+  $scope.isEating = function(playerId){
+    return round.getWinners().indexOf(playerId)>-1;
+  };
+  $scope.numberOfFarnEating = function(playerId){
+    if(!$scope.isEating(playerId)) return -1;
+    return round.wus.filter(function(wu){
+      return wu.playerId==playerId;
+    })[0].farn;
+  };
+  $scope.isLosing = function(playerId){
+    return $scope.someoneIsEating() && !$scope.isEating(playerId);
+  };
+  $scope.eat = function(playerId, numberOfFarn){
+    round.addWu(playerId, numberOfFarn);
+  };
+  $scope.selfTouched = function(losers){
+    losers.forEach(function(loser){
+      round.addLoser(loser.id);
+    });
+    saveRound();
+    resetRound();
+  };
+  $scope.lose = function(loserId){
+    round.addLoser(loserId);
+    saveRound();
+    resetRound();
+  };
+
+  /* for graph */
+  $scope.chart_type="chart-line";
+  $scope.$watch('mjData', function(mjData){
+    generateSelfTouchedMenu();
+    /* graph:
+     * series: player
+     * labels: round
+     * data: score */
+    if(mjData instanceof MJData){
+      $scope.graph = {};
+      $scope.graph.series = mjData.getPlayerNames();
+      $scope.graph.labels = range(0, mjData.rounds.length-1).map(function(i){
+        if(i==0) return "initial";
+        return "round "+i;
+      });
+      $scope.graph.data = mjData.getPlayerScores();
+    }
+  }, true);
+  $scope.downloadMJData = function(){
+    
+  };
+
+  /* confirm before exiting */
+  $scope.$watch('started', function(started){
+    if(!started){ return; }
+    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
+    window.onbeforeunload = function (e) {
+      console.log(e);
+      e = e || window.event;
+
+      // For IE and Firefox prior to version 4
+      if (e) {
+          e.returnValue = confirmmsg;
+      }
+
+      // For Safari
+      return confirmmsg;
+    };
+  });
+  
 });

@@ -1,61 +1,61 @@
 #!/usr/bin/php
-<html ng-app="ssas">
+<html ng-app="mjCal">
   <head>
-    <title>Secret Santa Allocation System (SSAS)</title>
-    <link rel="icon" type="image/x-icon" href="http://lh4.ggpht.com/-W-faUid9Zcs/Tujz1ybAF1I/AAAAAAAAJC0/RbVRgCC8YSY/Flying-Songbird_thumb.png?imgmax=800"/>
+    <title>Mahjong Score Calculator</title>
+    <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAABX1BMVEX///+lZRmhYRK4qpjQ0MzOzszGxsO/v728vLq6ura2trO0tLKysq+vr6ysrKurq6ilpaGwsK2hoZ+hoZ6iop+hoZ/IyMS2QECoGhrc29jKysbMzMjGxsLJycbNzcmqXVvm5eSxNDSvNDSjOTnIu7fOz8vJyceaCgqoHR2jHh3LrarOzsrLy8mZAACsWVfMvrrR0c3Pz8vKysqRAADNxMHv5eTLfHzQ0MzMzMrR0c7S0s/LubbKubbT0c7V1dHQ0M3OzsvRyMXU1NDW1tLPz8zY2NTX19LX19PZ2dXU1NHa2tbc3Nnb29dERES2trLZ2dbS0tA6OjpsbGwfHx/e3trd3dnT09Dg4NwaGhri4t7j49/f39vT09Hl5uJCQkLn5+Tk5eHT08/u7uzx8u/x8e7v7+3u7uvDwbvu7urs7Ojp6ebq6uft7env7+vk5N/o6OTl5eLm5uPp6eXr6+ff3tsaoEqqAAAAFHRSTlMARuP7+/v7+/v7+/v7+/v7he98t4S+M5gAAAG6SURBVBiV7dpHT1VRFEBhBEREKYJY6SpgFxtKbxZQAXtBUBQL2Mv/D7O1JzshhAk5Wd9wn7fPXXf0kpdXUZHYg//4h7/4g9+I2S/E7k9UIivYgoEGGmiggbs8sArxuB/4jm/YSKzjKyL1Cww00EADDSwvsBqf8QlriY/IPhezD1iFgQYaaKCB5QXuxXvEl967xAqy02XEfW9hoIEGGmhgeYE1WMKbxOvEK8QsNl7iBQw00EADDSwvcB+e41niKeJF4vQJHiNOF2GggQYaaGB5gbVYwDwe4SEeIJuFORhooIEGGlhy4H7M4n7iHrLTu4jZHczAQAMNNNDA8gLrED+STSemEpOIWWzEHwEmYKCBBhpoYHmBBzCOuHoMo4iYEQxjCLdxCwYaaKCBBpYXeBCDiMCbuIHruIbVRLzwVRhooIEGGlheYD0GEKlXcBmXcBGDibjvAgw00EADDSwvsAHnEVefw1n0ow9ZVuiFgQYaaKCB5QU2IgLP4DROoQfd6EInOtAOAw000EADywtsQhtO4gSOIx58DEcRu0dwCAYaaKCBBpYXGJrRisPbFrst2FGWgQYaaKCBuydwE1z1+XlhZbgqAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/index.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
-    <script src="./js/controllers.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.css">
   </head>
   <body ng-controller="indexController">
-    <section class="container">
+    <section class="container" ng-cloak>
       <header class="jumbotron">
-        <div class="filter">
-          <h1><u>S</u>ecret <u>S</u>anta <u>A</u>llocation <u>S</u>ystem</h1>
-          <h2>SSAS</h2>
-        </div>
+        <h1>
+          <img src="https://cdn0.iconfinder.com/data/icons/mahjong/128/man8.png" />
+          Mahjong Score Calculator
+        </h1>
       </header>
 <?php /** login page **/ ?>
-      <main ng-hide="target">
+      <main ng-hide="started">
         <div class="row">
           <div class="col-sm-2">
           </div>
           <div class="col-sm-8">
-<p>
-            A Christmas is not Christmas without giving or recieving gifts. You are going to be someone's secret santa and buy a gift for him/her. Relax, someone is going to be your secret santa too! Login to see who you are going to buy gift to!
-</p>
-<p>
-The budget of this year's gift is around <strong>&pound;10</strong>.
-</p>
-<p>
-Current statistics:<br>
-People who has logged in and found out their master: <strong>{{stat.numberOfPeopleLoggedIn}}/{{stat.numberOfPeople}}</strong><br>
-</p>
-            <hr>
             <form>
               <div class="form-group">
-                <label for="person">Your name</label>
-                <select id="person" class="form-control" ng-model="id" ng-options="person.name for person in people | orderBy: 'name' track by person.id">
+                <label for="numberOfPlayer">Number of players</label>
+                <select id="numberOfPlayer" class="form-control" ng-model="numberOfPlayer">
+                  <option ng-repeat="n in range(DEFAULT_PLAYER, MAX_PLAYER)" value="{{n}}"
+                      ng-selected="n==DEFAULT_PLAYER">
+                    {{n}}
+                  </option>
                 </select>
               </div>
-
-              <div class="form-group">
-                <label for="password">Your password</label>
-                <input class="form-control" id="password" type="password" ng-model="password">
-                <p class="help-block">If you have never login before, this is where you set up your password.<br>
-                This is to make sure no other people peek who your master is.<br>
-                Although passwords are encrypted, try to AVOID using any of your common passwords as this system might be quite insecure.</p>
+              <div class="form-group" ng-repeat="i in range(1, numberOfPlayer)">
+                <label for="name{{i}}">Player {{i}}'s name</label>
+                <input class="form-control" id="name{{i}}" type="text" ng-model="playerNames[i-1]">
               </div>
-
+              <!--
               <div class="form-group">
-                <input type="checkbox" id="confirm" ng-model="confirm">
-                <label for="confirm">I am the selected person. And I promise not to cheat/hack/whatever to ruin the game. :p</label>
+                <label for="baseScore">Score for one farn</label>
+                <select id="baseScore" class="form-control" ng-model="baseScore">
+                    <option ng-repeat="n in range(DEFAULT_BASE_SCORE, MAX_BASE_SCORE)" value="{{n}}">
+                      {{n}}
+                    </option>
+                </select>
               </div>
-
-              <button class="btn btn-danger" ng-click="login()">Tell me my master!</button>
-              <span class="text-danger">{{errormsg}}</span>
+              -->
+              <div class="btn-group">
+                <button class="btn btn-default" ng-click="startGame()">Start the game</button>
+              </div>
+              <div class="btn-group">
+                <label>
+                  <div class="btn btn-success">
+                    <span class="glyphicon glyphicon-upload"></span> Upload game progress
+                  </div>
+                  <input type="file" class="hidden" fileread="uploadJson"></input>
+                </label>
+              </div>
             </form>
           </div>
           <div class="col-sm-2">
@@ -63,32 +63,101 @@ People who has logged in and found out their master: <strong>{{stat.numberOfPeop
         </div>
       </main>
 <?php /** result page **/?>
-      <main ng-if="target">
-        <h2>You are the secret santa of:</h2>
-        <h5>You are going to buy a gift for him/her and bring it to him/her at the Christmas dinner.</h5>
+      <main ng-if="started">
         <div class="row">
-          <div class="col-sm-5">
-            <div id="snow_frame">
+          <div class="col-md-6">
+            <form class="form-inline">
+              <div class="form-group">
+                <button class="btn btn-primary" type="button" ng-click="resetRound()">
+                Undo Eat
+                </button>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary" type="button" ng-click="cancelLastRound()">
+                Cancel last round
+                </button>
+              </div>
+              <div class="form-group">
+                <a class="btn btn-success" href="./downloadMJData.php?mjData={{mjData}}">
+                <span class="glyphicon glyphicon-download"></span>
+                Download game progress
+                </a>
+              </div>
+            </form>
+            <!--
+            <div>{{mjData}}</div>
+            -->
+            <div ng-repeat="player in mjData.players">
+              <form class="form-inline">
+              <!-- Name -->
+                <div class="input-group">
+                  <input type="text" ng-model="player.name" tabindex="{{player.id+1}}"></input>
+                </div>
+                <!-- Eat -->
+                <div class="btn-group">
+                  <button class="btn btn-default dropdown-toggle"
+                          type="button"
+                          data-toggle="dropdown"
+                          ng-disabled="isEating(player.id) || numberOfPeopleEating()==3">
+                          {{isEating(player.id) || numberOfPeopleEating()==3?"Eating "+numberOfFarnEating(player.id)+" farn":"Eat"}}
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} farn</a></li>
+                  </ul>
+                </div>
+                <!-- selfTouch -->
+                <div class="btn-group">
+                  <button class="btn btn-default dropdown-toggle"
+                          type="button"
+                          data-toggle="dropdown"
+                          ng-show="isEating(player.id) && numberOfPeopleEating()==1">
+                          Self-touched
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li class="dropdown-header">
+                    Losers:
+                    </li>
+                    <li ng-repeat="losers in selfTouchedMenu[player.id]">
+                      <a href="#" ng-click="selfTouched(losers)">
+                        {{losers[0].name}},
+                        {{losers[1].name}},
+                        {{losers[2].name}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <!-- Lose -->
+                <div class="btn-group">
+                  <button class="btn btn-default"
+                          ng-click="lose(player.id)"
+                          ng-show="isLosing(player.id)">
+                          Lose
+                  </button>
+                </div>
+              </form>
             </div>
-              <img ng-src="{{target.image}}" width="100%"></img>
+            <form class="form-inline">
+              <div class="form-group">
+                <button class="btn btn-warning" type="button" ng-click="addPlayer()">
+                  <span class="glyphicon glyphicon-plus"></span> Add player
+                </button>
+              </div>
+            </form>
           </div>
-          <div class="col-sm-7">
-            <div class="row">
-              <div class="col-sm-2">
-                Name
-              </div>
-              <div class="col-sm-10">
-                {{target.name}}
-              </div>
-              <div class="col-sm-2">
-                Facebook
-              </div>
-              <div class="col-sm-10">
-                <a target="_blank" href="http://www.facebook.com/{{target.facebook}}">www.facebook.com/{{target.facebook}}</a>
-              </div>
-            </div>
+          <div class="col-md-6 scrollableY">
+            <div ng-include="'./summaryTable.html'"></div>
+          </div>
+          <div class="col-xs-12">
+            <canvas id="line" class="chart chart-line" ng-class="chart_type" chart-data="graph.data"
+              chart-labels="graph.labels" chart-legend="true" chart-series="graph.series"
+              chart-click="onClick" chart-options="{bezierCurve:false, datasetFill:false, datasetStrokeWidth:4}">
+            </canvas> 
           </div>
         </div>
+        <script>
+        </script>
       </main>
       <footer>
         
@@ -96,5 +165,14 @@ People who has logged in and found out their master: <strong>{{stat.numberOfPeop
         <div class="text-right"> <em>All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.</em></div>
       </footer>
     </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+    <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="./js/classes/Player.js"></script>
+    <script src="./js/classes/Round.js"></script>
+    <script src="./js/classes/MJData.js"></script>
+    <script src="./js/controllers.js"></script>
   </body>
 </html>

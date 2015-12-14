@@ -1,0 +1,22 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Round</th>
+      <th ng-repeat="player in mjData.players">
+        {{player.name}}
+      </th>
+    </tr>
+  </thead>
+  <tr ng-repeat="(i, round) in mjData.rounds">
+    <td>{{i}}</td>
+    <td ng-repeat="player in mjData.players">
+      {{round.getScore(player.id)>0?"&plus;":""}}{{round.getScore(player.id)}}
+    </td>
+  </tr>
+  <tr>
+    <td>Summary</td>
+    <td ng-repeat="player in mjData.players">
+      {{mjData.getPlayerScore(player.id)}}
+    </td>
+  </tr>
+</table>
