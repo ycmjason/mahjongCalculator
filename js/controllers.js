@@ -17,6 +17,9 @@ var range = function(startNumber, endNumber){
 
 var mjCal = angular.module('mjCal', ['chart.js']);
 
+mjCal.config(['$compileProvider', function ($compileProvider) {
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data):/);
+}]);
 mjCal.directive("fileread", [function () {
     return {
         scope: {

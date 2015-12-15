@@ -41,7 +41,7 @@ var MJData = function(json){
     });
   };
   this.toLink = function(){
-    return "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(_this));
+    return "data: text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(_this));
   }
 };
 MJData.isCorrupted = function(data){

@@ -1,4 +1,4 @@
-<table class="table table-hover">
+<table class="table table-hover" style="margin-bottom:0;">
   <thead>
     <tr>
       <th>Round</th>
@@ -13,10 +13,12 @@
       {{round.getScore(player.id)>0?"&plus;":""}}{{round.getScore(player.id)}}
     </td>
   </tr>
-  <tr>
-    <td>Summary</td>
+  <tr class="summaryTable_summary">
+    <td><strong>Summary</strong></td>
     <td ng-repeat="player in mjData.players">
+      <strong>
       {{mjData.getPlayerScore(player.id)}}
+      </strong>
     </td>
   </tr>
 </table>

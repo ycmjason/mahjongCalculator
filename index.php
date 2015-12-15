@@ -65,7 +65,7 @@
 <?php /** result page **/?>
       <main ng-if="started">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-lg-5">
             <form class="form-inline">
               <div class="form-group">
                 <button class="btn btn-primary" type="button" ng-click="resetRound()">
@@ -78,7 +78,7 @@
                 </button>
               </div>
               <div class="form-group">
-                <a class="btn btn-success" href="./downloadMJData.php?mjData={{mjData}}">
+                <a class="btn btn-success" href="{{mjData.toLink()}}" download="mjData.json">
                 <span class="glyphicon glyphicon-download"></span>
                 Download game progress
                 </a>
@@ -91,7 +91,7 @@
               <form class="form-inline">
               <!-- Name -->
                 <div class="input-group">
-                  <input type="text" ng-model="player.name" tabindex="{{player.id+1}}"></input>
+                  <input class="form-control" type="text" ng-model="player.name" tabindex="{{player.id+1}}"></input>
                 </div>
                 <!-- Eat -->
                 <div class="btn-group">
@@ -99,7 +99,7 @@
                           type="button"
                           data-toggle="dropdown"
                           ng-disabled="isEating(player.id) || numberOfPeopleEating()==3">
-                          {{isEating(player.id) || numberOfPeopleEating()==3?"Eating "+numberOfFarnEating(player.id)+" farn":"Eat"}}
+                          {{isEating(player.id)?"Eating "+numberOfFarnEating(player.id)+" farn":"Eat"}}
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
@@ -146,14 +146,14 @@
               </div>
             </form>
           </div>
-          <div class="col-md-6 scrollableY">
-            <div ng-include="'./summaryTable.html'"></div>
-          </div>
-          <div class="col-xs-12">
+          <div class="col-lg-7">
             <canvas id="line" class="chart chart-line" ng-class="chart_type" chart-data="graph.data"
               chart-labels="graph.labels" chart-legend="true" chart-series="graph.series"
               chart-click="onClick" chart-options="{bezierCurve:false, datasetFill:false, datasetStrokeWidth:4}">
             </canvas> 
+          </div>
+          <div class="col-sm-12">
+            <div ng-include="'./summaryTable.html'"></div>
           </div>
         </div>
         <script>
@@ -174,5 +174,15 @@
     <script src="./js/classes/Round.js"></script>
     <script src="./js/classes/MJData.js"></script>
     <script src="./js/controllers.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-71404316-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
   </body>
 </html>
