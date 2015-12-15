@@ -46,7 +46,7 @@
               </div>
               -->
               <div class="btn-group">
-                <button class="btn btn-default" ng-click="startGame()">Start the game</button>
+                <button class="btn btn-default" ng-click="submitAndStart()">Start the game</button>
               </div>
               <div class="btn-group">
                 <label>

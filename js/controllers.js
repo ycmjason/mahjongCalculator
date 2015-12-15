@@ -41,55 +41,39 @@ mjCal.directive("fileread", [function () {
 
 
 mjCal.controller('indexController', function ($scope) {
+  var startGame = function(){
+    $scope.started = true;
+    resetRound();
+  };
+
   $scope.DEFAULT_PLAYER = DEFAULT_PLAYER;
   $scope.MAX_PLAYER = MAX_PLAYER;
   $scope.MIN_MAX_FARN = MIN_MAX_FARN;
   $scope.MAX_MAX_FARN = MAX_MAX_FARN;
 
+  $scope.started = false;
   $scope.range = range;
   
   $scope.$watch('uploadJson', function(json){
-    json = angular.fromJson(json);
-    if(!MJData.isCorrupted(json)){
-      $scope.mjData = new MJData();
-      json.players.map(function(player){
-        return new Player(player.name);
-      }).forEach(function(player){
-        $scope.mjData.addPlayer(player);
-      });
-
-      json.rounds.map(function(round){
-        var newRound = new Round();
-        round.wus.forEach(function(wu){
-          newRound.addWu(wu.playerId, wu.farn);
-        });
-        round.losers.forEach(function(loserId){
-          newRound.addLoser(loserId);
-        });
-        return newRound;
-      }).forEach(function(round){
-        $scope.mjData.addRound(round); 
-      });
-      $scope.started = true;
-      resetRound();
+    if(json){
+      json = angular.fromJson(json);
+      $scope.mjData = new MJData(json);
+      startGame();
     }
   });
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
   $scope.playerNames = [];
-
-  $scope.started = false;
   $scope.mjData = new MJData();
-  $scope.startGame = function(){
-    $scope.started = true;
+
+  $scope.submitAndStart = function(){
     $scope.playerNames.forEach(function(playerName){
       $scope.mjData.addPlayer(new Player(playerName));
     });
     // all start from 0
     resetRound();
     saveRound();
-    // reset round
-    resetRound();
+    startGame();
   };
 
 

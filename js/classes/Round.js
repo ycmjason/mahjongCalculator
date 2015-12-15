@@ -1,7 +1,4 @@
-var Round = function(){
-  var _round = this;
-  this.wus = [];
-  this.losers = [];
+var Round = function(json){
 
   var Wu = function(playerId, farn){
     this.playerId = playerId;
@@ -25,6 +22,17 @@ var Round = function(){
       }
       return wuScore;
     }
+  }
+
+  var _round = this;
+  this.wus = [];
+  this.losers = [];
+
+  if(!Round.isCorrupted(json)){
+    this.wus = json.wus.map(function(wu){
+      return new Wu(wu.playerId, wu.farn);
+    });
+    this.losers = json.losers;
   }
 
   this.getScore = function(playerId){
@@ -72,4 +80,7 @@ var Round = function(){
     if(!(this.losers.indexOf(playerId)>-1))
       this.losers.push(playerId);
   }
+}
+Round.isCorrupted = function(data){
+  return !(data!=undefined && data.wus!=undefined && data.losers!=undefined);
 }

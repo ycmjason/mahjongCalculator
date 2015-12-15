@@ -5,6 +5,12 @@ var notRightInstanceMSG = function(className){
 var MJData = function(json){
   this.players = [];
   this.rounds = [];
+  if(!MJData.isCorrupted(json)){
+    this.players = json.players;
+    this.rounds = json.rounds.map(function(round){
+      return new Round(round);
+    });;
+  }
   this.addPlayer = function(player){
     if(!(player instanceof Player))
       console.error(notRightInstanceMSG("Player"));
