@@ -158,13 +158,7 @@ mjCal.controller('indexController', function ($scope) {
      * labels: round
      * data: score */
     if(mjData instanceof MJData){
-      $scope.graph = {};
-      $scope.graph.series = mjData.getPlayerNames();
-      $scope.graph.labels = range(0, mjData.rounds.length-1).map(function(i){
-        if(i==0) return "initial";
-        return "round "+i;
-      });
-      $scope.graph.data = mjData.getPlayerScores();
+      $scope.graph = mjData.getChartData();
     }
   }, true);
   $scope.downloadMJData = function(){
