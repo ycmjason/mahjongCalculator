@@ -119,7 +119,7 @@
                     <li class="dropdown-header">
                     Losers:
                     </li>
-                    <li ng-repeat="losers in selfTouchedMenu[player.id]">
+                    <li ng-repeat="losers in selfTouchedMenu(player.id)">
                       <a href="#" ng-click="selfTouched(losers)">
                         {{losers[0].name}},
                         {{losers[1].name}},
@@ -170,7 +170,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
     <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="./js/classes/Player.js"></script>
+    <script src="./js/Utils.js"></script>
     <script src="./js/classes/Round.js"></script>
     <script src="./js/classes/MJData.js"></script>
     <script src="./js/controllers.js"></script>

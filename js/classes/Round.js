@@ -9,7 +9,7 @@ var Round = function(json){
         wuScore = Math.floor(3*wuScore/2);
       }
       return wuScore;
-    }
+    };
     var getWuScoreHelper = function(farn){
       var wuScore = Math.pow(BASESCORE, farn);
       if(farn>HALF_SPICE_FROM){
@@ -21,8 +21,8 @@ var Round = function(json){
         }
       }
       return wuScore;
-    }
-  }
+    };
+  };
 
   var _round = this;
   this.wus = [];
@@ -53,25 +53,25 @@ var Round = function(json){
 
   this.isWinner = function(playerId){
     return this.getWinners().indexOf(playerId)>-1;
-  }
+  };
   
   this.isLoser = function(playerId){
     return this.losers.indexOf(playerId)>-1;
-  }
+  };
   
   this.isSelfTouched = function(){
     return this.wus.length==1 && this.losers.length>1;
-  }
+  };
   
   this.addWu = function(playerId, farn){
     if(!(this.isWinner(playerId)))
       this.wus.push(new Wu(playerId, farn));
-  }
+  };
   this.getWinners = function(){
     return this.wus.map(function(wu){
       return wu.playerId;
     });
-  }
+  };
   this.addLoser = function(playerId){
     if(this.wus.length==0)
       console.error("Trying to add loser before adding winner");
@@ -79,8 +79,8 @@ var Round = function(json){
       console.error("Trying to add more than one loser while there are more than one winners");
     if(!(this.losers.indexOf(playerId)>-1))
       this.losers.push(playerId);
-  }
-}
+  };
+};
 Round.isCorrupted = function(data){
   return !(data!=undefined && data.wus!=undefined && data.losers!=undefined);
-}
+};

@@ -1,11 +1,5 @@
 "use strict";
-var DEFAULT_PLAYER = 4;
-var MAX_PLAYER = 8;
-//var BASESCORE = $scope.BASESCORE = 2;
-var BASESCORE = 2;
-var HALF_SPICE_FROM = 4;
-var MIN_MAX_FARN = 1;
-var MAX_MAX_FARN = 13;
+var mjCal = angular.module('mjCal', ['chart.js']);
 
 var range = function(startNumber, endNumber){
   var arr = new Array();
@@ -15,65 +9,145 @@ var range = function(startNumber, endNumber){
   return arr;
 };
 
-var mjCal = angular.module('mjCal', ['chart.js']);
+var notRightInstanceMSG = function(className){
+  return "Given player is not an instance of "+className+".";
+}
 
-mjCal.config(['$compileProvider', function ($compileProvider) {
-  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data):/);
-}]);
-mjCal.directive("fileread", [function () {
-    return {
-        scope: {
-            fileread: "="
-        },
-        link: function (scope, element, attributes) {
-            element.bind("change", function (changeEvent) {
-                var reader = new FileReader();
-                reader.onload = function (loadEvent) {
-                    scope.$apply(function () {
-                        scope.fileread = loadEvent.target.result;
-                    });
-                }
-                reader.readAsText(changeEvent.target.files[0]);
-            });
-        }
+var MJData = function(baseScore, halfSpiceFrom){
+  var _this = this;
+  this.baseScore = baseScore;
+  this.halfSpiceFrom = halfSpiceFrom;
+  this.players = [];
+  this.rounds = [];
+  this.addPlayer = function(player){
+    if(!(player instanceof Player))
+      console.error(notRightInstanceMSG("Player"));
+    player.id = this.players.length;
+    _this.players.push(player);
+  };
+  this.addRound = function(round){
+    if(!(round instanceof Round))
+      console.error(notRightInstanceMSG("Round"));
+    _this.rounds.push(round);
+  };
+  this.getPlayerNames = function(){
+    return _this.players.map(function(p){return p.name});
+  };
+  this.getPlayerScores = function(){
+    var baseScore = _this.baseScore;
+    var halfSpiceFrom = _this.halfSpiceFrom;
+    return _this.players.map(function(player){
+      var accScore = 0;
+      return _this.rounds.map(function(round){
+        round.wus.forEach(function(wu){
+          var wuScore = wu.getWuScore(baseScore, halfSpiceFrom);
+          /* winner */
+          if(wu.playerId==player.id){
+            accScore += wuScore;
+          }
+          /* loser */
+          if(round.isLoser(player.id))
+            accScore -= Math.floor(wuScore/round.losers.length);
+        });
+        return accScore;
+      });
+    });
+  };
+};
+
+var Player = function(name){
+  this.name = name;
+};
+
+var Round = function(){
+  var _this=this;
+  this.wus = [];
+  this.losers = [];
+
+  var Wu = function(playerId, farn){
+    var __this = this;
+    this.playerId = playerId;
+    this.farn = farn;
+    this.getWuScore = function(baseScore, halfSpiceFrom){
+      return getWuScoreHelper(baseScore, halfSpiceFrom, __this.farn);
     }
-}]);
+    var getWuScoreHelper = function(baseScore, halfSpiceFrom, farn){
+      var wuScore = Math.pow(baseScore, farn);
+      if(farn>halfSpiceFrom){
+        if(farn%2==0){ //even
+          wuScore = Math.pow(baseScore, (farn+halfSpiceFrom)/2);
+        }else{
+          wuScore = (getWuScoreHelper(baseScore, halfSpiceFrom, farn-1)  +
+                     getWuScoreHelper(baseScore, halfSpiceFrom, farn+1)) / 2;
+        }
+      }
+      if(_this.isSelfTouched())
+        wuScore = Math.floor((3*wuScore)/2);
+      return wuScore;
+    }
+  }
 
+  this.isWinner = function(playerId){
+    return _this.getWinners().indexOf(playerId)>-1;
+  }
+  
+  this.isLoser = function(playerId){
+    return _this.losers.indexOf(playerId)>-1;
+  }
+  
+  this.isSelfTouched = function(){
+    return _this.wus.length==1 && _this.losers.length>1;
+  }
+  
+  this.addWu = function(playerId, farn){
+    if(!(_this.isWinner(playerId)))
+      _this.wus.push(new Wu(playerId, farn));
+  }
+  this.getWinners = function(){
+    return _this.wus.map(function(wu){
+      return wu.playerId;
+    });
+  }
+  this.addLoser = function(playerId){
+    if(_this.wus.length==0)
+      console.error("Trying to add loser before adding winner");
+    if(_this.wus.length>1 && _this.losers.length>=1)
+      console.error("Trying to add more than one loser while there are more than one winners");
+    if(!(_this.losers.indexOf(playerId)>-1))
+      _this.losers.push(playerId);
+  }
+}
 
 mjCal.controller('indexController', function ($scope) {
-  var startGame = function(){
-    $scope.started = true;
-    resetRound();
-  };
+  var DEFAULT_PLAYER = $scope.DEFAULT_PLAYER = 4;
+  var MAX_PLAYER = $scope.MAX_PLAYER = 8;
+  //var DEFAULT_BASE_SCORE = $scope.DEFAULT_BASE_SCORE = 2;
+  var DEFAULT_BASE_SCORE = 2;
+  var DEFAULT_HALF_SPICE_FROM = 4;
+  var MAX_BASE_SCORE = $scope.MAX_BASE_SCORE = 10;
+  var MIN_MAX_FARN = $scope.MIN_MAX_FARN = 1;
+  var MAX_MAX_FARN = $scope.MAX_MAX_FARN = 15;
 
-  $scope.DEFAULT_PLAYER = DEFAULT_PLAYER;
-  $scope.MAX_PLAYER = MAX_PLAYER;
-  $scope.MIN_MAX_FARN = MIN_MAX_FARN;
-  $scope.MAX_MAX_FARN = MAX_MAX_FARN;
-
-  $scope.started = false;
   $scope.range = range;
-  
-  $scope.$watch('uploadJson', function(json){
-    if(json){
-      json = angular.fromJson(json);
-      $scope.mjData = new MJData(json);
-      startGame();
-    }
-  });
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
+  //$scope.baseScore = DEFAULT_BASE_SCORE;
   $scope.playerNames = [];
-  $scope.mjData = new MJData();
 
-  $scope.submitAndStart = function(){
-    $scope.playerNames.forEach(function(playerName){
-      $scope.mjData.addPlayer(new Player(playerName));
+  $scope.started = false;
+  $scope.startGame = function(){
+    $scope.started = true;
+    //$scope.mjData = new MJData($scope.baseScore);
+    $scope.mjData = new MJData(DEFAULT_BASE_SCORE, DEFAULT_HALF_SPICE_FROM);
+    generateSelfTouchedMenu();
+    $scope.playerNames.forEach(function(playerName, i){
+      $scope.selfTouchedMenu.push(selfTouchedMenu(i));
     });
     // all start from 0
     resetRound();
     saveRound();
-    startGame();
+    // reset round
+    resetRound();
   };
 
 
@@ -91,9 +165,10 @@ mjCal.controller('indexController', function ($scope) {
   }
   var generateSelfTouchedMenu = function(){
     $scope.selfTouchedMenu = [];
-    $scope.mjData.players.forEach(function(player, i){
-      $scope.selfTouchedMenu.push(selfTouchedMenu(i));
+    $scope.playerNames.forEach(function(playerName){
+      $scope.mjData.addPlayer(playerName);
     });
+
   }
   var selfTouchedMenu = function(playerId){
     var restPlayers = angular.copy($scope.mjData.players);
@@ -113,7 +188,7 @@ mjCal.controller('indexController', function ($scope) {
     return options;
   };
   $scope.addPlayer = function(){
-    $scope.mjData.addPlayer(new Player(""));
+    $scope.mjData.addPlayer("");
   }
   $scope.someoneIsEating = function(){
     return $scope.numberOfPeopleEating()>0;
@@ -152,35 +227,19 @@ mjCal.controller('indexController', function ($scope) {
   /* for graph */
   $scope.chart_type="chart-line";
   $scope.$watch('mjData', function(mjData){
-    generateSelfTouchedMenu();
     /* graph:
      * series: player
      * labels: round
      * data: score */
     if(mjData instanceof MJData){
-      $scope.graph = mjData.getChartData();
+      $scope.graph = {};
+      $scope.graph.series = mjData.getPlayerNames();
+      $scope.graph.labels = range(0, mjData.rounds.length-1).map(function(i){
+        if(i==0) return "initial";
+        return "round "+i;
+      });
+      $scope.graph.data = mjData.getPlayerScores();
     }
   }, true);
-  $scope.downloadMJData = function(){
-    
-  };
-
-  /* confirm before exiting */
-  $scope.$watch('started', function(started){
-    if(!started){ return; }
-    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
-    window.onbeforeunload = function (e) {
-      console.log(e);
-      e = e || window.event;
-
-      // For IE and Firefox prior to version 4
-      if (e) {
-          e.returnValue = confirmmsg;
-      }
-
-      // For Safari
-      return confirmmsg;
-    };
-  });
   
 });

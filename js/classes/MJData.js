@@ -1,24 +1,22 @@
-var notRightInstanceMSG = function(className){
-  return "Given player is not an instance of "+className+".";
-}
-
 var MJData = function(json){
+  var Player = function(id, name){
+    this.id = id;
+    this.name = name;
+  };
   this.players = [];
   this.rounds = [];
   if(!MJData.isCorrupted(json)){
     this.players = json.players;
     this.rounds = json.rounds.map(function(round){
       return new Round(round);
-    });;
+    });
   }
-  this.addPlayer = function(player){
-    if(!(player instanceof Player))
-      console.error(notRightInstanceMSG("Player"));
+  this.addPlayer = function(name){
+    var player = new Player(this.players.length, name);
     this.players.push(player);
+    return player;
   };
   this.addRound = function(round){
-    if(!(round instanceof Round))
-      console.error(notRightInstanceMSG("Round"));
     this.rounds.push(round);
   };
   this.getPlayerFinalScore = function(playerId){
@@ -27,7 +25,7 @@ var MJData = function(json){
     }).reduce(function(a, b){
       return a+b;
     });
-  }
+  };
   this.getChartData = function(){
     var ret = {};
     ret.labels = range(0, this.rounds.length-1).map(function(i){
@@ -48,9 +46,9 @@ var MJData = function(json){
   };
   this.toLink = function(){
     return "data: text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this));
-  }
+  };
 };
 MJData.isCorrupted = function(data){
   return !(data!=undefined && data.players!=undefined && data.players.length>=4 &&
     data.rounds!=undefined && data.rounds.length>0);
-}
+};
