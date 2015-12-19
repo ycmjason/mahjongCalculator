@@ -1,54 +1,43 @@
-var Round = function(json){
-
+function Round(json){
   var Wu = function(playerId, farn){
     this.playerId = playerId;
     this.farn = farn;
+    var strategy = new MJData.FarnScoreStrategy();
     this.getWuScore = function(){
-      var wuScore = getWuScoreHelper(this.farn);
-      if(_round.isSelfTouched()){
-        wuScore = Math.floor(3*wuScore/2);
-      }
-      return wuScore;
-    };
-    var getWuScoreHelper = function(farn){
-      var wuScore = Math.pow(BASESCORE, farn);
-      if(farn>HALF_SPICE_FROM){
-        if(farn%2==0){ //even
-          wuScore = Math.pow(BASESCORE, (farn+HALF_SPICE_FROM)/2);
-        }else{
-          wuScore = (getWuScoreHelper(farn-1)  +
-                     getWuScoreHelper(farn+1)) / 2;
-        }
-      }
-      return wuScore;
-    };
+      return strategy.getWuScore(this.farn);
+    }
   };
 
   var _round = this;
   this.wus = [];
   this.losers = [];
+  this.isSelfTouched = false;
 
   if(!Round.isCorrupted(json)){
     this.wus = json.wus.map(function(wu){
       return new Wu(wu.playerId, wu.farn);
     });
     this.losers = json.losers;
+    this.isSelfTouched = json.isSelfTouched;
+  }
+  this.findWuByWinner = function(playerId){
+    return this.wus.filter(function(wu){
+      return wu.playerId==playerId;
+    })[0];
   }
 
   this.getScore = function(playerId){
-    var score = 0;
+    var strategy = new MJData.ChungStrategy(this.isSelfTouched);
     if(this.isWinner(playerId)){
-      score = this.wus.filter(function(wu){
-        return wu.playerId==playerId;
-      })[0].getWuScore();
+      return strategy.getWinnerScore(this.findWuByWinner(playerId).getWuScore());
     }else if(this.isLoser(playerId)){
-      score = -((this.wus.map(function(wu){
-        return wu.getWuScore();
+      return this.wus.map(function(wu){
+        return strategy.getLoserScore(wu.getWuScore(), _round.losers.length, _round.didOutChung(playerId));
       }).reduce(function(s1, s2){
         return s1+s2;
-      }))/this.losers.length);
+      });
     }
-    return score;
+    return 0;
   };
 
   this.isWinner = function(playerId){
@@ -58,10 +47,10 @@ var Round = function(json){
   this.isLoser = function(playerId){
     return this.losers.indexOf(playerId)>-1;
   };
-  
-  this.isSelfTouched = function(){
-    return this.wus.length==1 && this.losers.length>1;
-  };
+
+  this.didOutChung = function(playerId){
+    return this.losers.indexOf(playerId)==0;
+  }
   
   this.addWu = function(playerId, farn){
     if(!(this.isWinner(playerId)))
@@ -81,6 +70,7 @@ var Round = function(json){
       this.losers.push(playerId);
   };
 };
+
 Round.isCorrupted = function(data){
-  return !(data!=undefined && data.wus!=undefined && data.losers!=undefined);
+  return data==undefined || data.wus==undefined || data.losers==undefined || data.isSelfTouched==undefined;
 };

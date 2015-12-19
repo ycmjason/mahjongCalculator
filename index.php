@@ -1,8 +1,26 @@
 #!/usr/bin/php
+<?php
+$js_resources = array();
+array_push($js_resources, "./js/Utils.js");
+array_push($js_resources, "./js/classes/strategies/chung/ChungStrategy.js");
+array_push($js_resources, "./js/classes/strategies/chung/HalfChungStrategy.js");
+array_push($js_resources, "./js/classes/strategies/chung/FullChungStrategy.js");
+
+array_push($js_resources, "./js/classes/strategies/farnScore/FarnScoreStrategy.js");
+array_push($js_resources, "./js/classes/strategies/farnScore/BasicStrategy.js");
+array_push($js_resources, "./js/classes/strategies/farnScore/25ChickenStrategy.js");
+array_push($js_resources, "./js/classes/strategies/farnScore/51Strategy.js");
+array_push($js_resources, "./js/classes/strategies/farnScore/12MosquitosStrategy.js");
+
+array_push($js_resources, "./js/classes/Round.js");
+array_push($js_resources, "./js/classes/MJData.js");
+array_push($js_resources, "./js/controllers.js");
+?>
 <html ng-app="mjCal">
   <head>
     <title>Mahjong Score Calculator</title>
     <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAABX1BMVEX///+lZRmhYRK4qpjQ0MzOzszGxsO/v728vLq6ura2trO0tLKysq+vr6ysrKurq6ilpaGwsK2hoZ+hoZ6iop+hoZ/IyMS2QECoGhrc29jKysbMzMjGxsLJycbNzcmqXVvm5eSxNDSvNDSjOTnIu7fOz8vJyceaCgqoHR2jHh3LrarOzsrLy8mZAACsWVfMvrrR0c3Pz8vKysqRAADNxMHv5eTLfHzQ0MzMzMrR0c7S0s/LubbKubbT0c7V1dHQ0M3OzsvRyMXU1NDW1tLPz8zY2NTX19LX19PZ2dXU1NHa2tbc3Nnb29dERES2trLZ2dbS0tA6OjpsbGwfHx/e3trd3dnT09Dg4NwaGhri4t7j49/f39vT09Hl5uJCQkLn5+Tk5eHT08/u7uzx8u/x8e7v7+3u7uvDwbvu7urs7Ojp6ebq6uft7env7+vk5N/o6OTl5eLm5uPp6eXr6+ff3tsaoEqqAAAAFHRSTlMARuP7+/v7+/v7+/v7+/v7he98t4S+M5gAAAG6SURBVBiV7dpHT1VRFEBhBEREKYJY6SpgFxtKbxZQAXtBUBQL2Mv/D7O1JzshhAk5Wd9wn7fPXXf0kpdXUZHYg//4h7/4g9+I2S/E7k9UIivYgoEGGmiggbs8sArxuB/4jm/YSKzjKyL1Cww00EADDSwvsBqf8QlriY/IPhezD1iFgQYaaKCB5QXuxXvEl967xAqy02XEfW9hoIEGGmhgeYE1WMKbxOvEK8QsNl7iBQw00EADDSwvcB+e41niKeJF4vQJHiNOF2GggQYaaGB5gbVYwDwe4SEeIJuFORhooIEGGlhy4H7M4n7iHrLTu4jZHczAQAMNNNDA8gLrED+STSemEpOIWWzEHwEmYKCBBhpoYHmBBzCOuHoMo4iYEQxjCLdxCwYaaKCBBpYXeBCDiMCbuIHruIbVRLzwVRhooIEGGlheYD0GEKlXcBmXcBGDibjvAgw00EADDSwvsAHnEVefw1n0ow9ZVuiFgQYaaKCB5QU2IgLP4DROoQfd6EInOtAOAw000EADywtsQhtO4gSOIx58DEcRu0dwCAYaaKCBBpYXGJrRisPbFrst2FGWgQYaaKCBuydwE1z1+XlhZbgqAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.css">
@@ -22,6 +40,7 @@
           </div>
           <div class="col-sm-8">
             <form>
+              <!-- number of players -->
               <div class="form-group">
                 <label for="numberOfPlayer">Number of players</label>
                 <select id="numberOfPlayer" class="form-control" ng-model="numberOfPlayer">
@@ -31,23 +50,109 @@
                   </option>
                 </select>
               </div>
+<!-- player name, ng-repeat -->
               <div class="form-group" ng-repeat="i in range(1, numberOfPlayer)">
                 <label for="name{{i}}">Player {{i}}'s name</label>
                 <input class="form-control" id="name{{i}}" type="text" ng-model="playerNames[i-1]">
               </div>
-              <!--
+<!-- advanced settings -->
               <div class="form-group">
-                <label for="baseScore">Score for one farn</label>
-                <select id="baseScore" class="form-control" ng-model="baseScore">
-                    <option ng-repeat="n in range(DEFAULT_BASE_SCORE, MAX_BASE_SCORE)" value="{{n}}">
-                      {{n}}
-                    </option>
-                </select>
+                  <a href="#" class="form-control-static" ng-click="advanced_setting_show=advanced_setting_show?false:true">
+                    <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
+                    advanced settings
+                  </a>
               </div>
-              -->
+              <div ng-show="advanced_setting_show">
+                <!-- Chung-ness -->
+                <div class="form-group">
+                  <label>Chung-ness</label>
+                  <div>
+                    <label class="radio-inline">
+                      <input name="chungStrategy"
+                             type="radio"
+                             value="HalfChungStrategy"
+                             ng-model="chungStrategy">
+                      Half Chung
+                    </label>
+                    <label class="radio-inline">
+                      <input name="chungStrategy"
+                             type="radio"
+                             value="FullChungStrategy"
+                             ng-model="chungStrategy">
+                      Full Chung (HK tradition)
+                    </label>
+                  </div>
+                </div>
+                <!-- farn score strategy -->
+                <div class="form-group">
+                  <label>Scoring method</label>
+                  <div>
+                    <label class="radio-inline">
+                      <input name="farnScoreStrategy"
+                             type="radio"
+                             value="_25ChickenStrategy"
+                             ng-model="farnScoreStrategy">
+                      25 Chicken (HK tradition)
+                    </label>
+                    <label class="radio-inline">
+                      <input name="farnScoreStrategy"
+                             type="radio"
+                             value="_51Strategy"
+                             ng-model="farnScoreStrategy">
+                      51
+                    </label>
+                    <label class="radio-inline">
+                      <input name="farnScoreStrategy"
+                             type="radio"
+                             value="_12MosquitosStrategy"
+                             ng-model="farnScoreStrategy">
+                      12 Mosquitos
+                    </label>
+                  </div>
+                </div>
+                <!-- Chung-ness -->
+                <div class="form-group">
+                  <label>Half spicy from:</label>
+                  <div>
+                    <label class="radio-inline">
+                      <input name="halfSpicyFrom"
+                             type="radio"
+                             value="10000"
+                             ng-focus="halfSpicyFromCustomFocus=false"
+                             ng-model="halfSpicyFrom">
+                      Never half spicy
+                    </label>
+                    <label class="radio-inline">
+                      <input name="halfSpicyFrom"
+                             type="radio"
+                             value="4"
+                             ng-focus="halfSpicyFromCustomFocus=false"
+                             ng-model="halfSpicyFrom">
+                      4 (HK tradition)
+                    </label>
+                    <label class="radio-inline" for="halfSpicyFromCustom">
+                      <input id="halfSpicyFromCustom"
+                             name="halfSpicyFrom"
+                             type="radio"
+                             value="custom"
+                             ng-checked="halfSpicyFromCustomFocus"
+                             ng-model="halfSpicyFrom">
+                      <input type="text"
+                             size="3"
+                             ng-focus="halfSpicyFromCustomFocus=true"
+                             ng-model="halfSpicyFromCustom">
+                      </input>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+<!-- start button -->
               <div class="btn-group">
                 <button class="btn btn-default" ng-click="submitAndStart()">Start the game</button>
               </div>
+<!-- upload button -->
               <div class="btn-group">
                 <label>
                   <div class="btn btn-success">
@@ -119,22 +224,47 @@
                     <li class="dropdown-header">
                     Losers:
                     </li>
-                    <li ng-repeat="losers in selfTouchedMenu(player.id)">
+                    <li ng-repeat="losers in getRestPlayers(player.id, 1)">
                       <a href="#" ng-click="selfTouched(losers)">
-                        {{losers[0].name}},
-                        {{losers[1].name}},
-                        {{losers[2].name}}
+                        {{mjData.players[losers[0]].name}}
+                      </a>
+                    </li>
+                    <li ng-repeat="losers in getRestPlayers(player.id, 3)">
+                      <a href="#" ng-click="selfTouched(losers)">
+                        {{mjData.players[losers[0]].name}},
+                        {{mjData.players[losers[1]].name}},
+                        {{mjData.players[losers[2]].name}},
                       </a>
                     </li>
                   </ul>
                 </div>
                 <!-- Lose -->
                 <div class="btn-group">
+                  <button class="btn btn-default dropdown-toggle"
+                          type="button"
+                          data-toggle="dropdown"
+                          ng-show="isLosing(player.id)">
+                          Lose (out chung)
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li class="dropdown-header">
+                    Other losers:
+                    </li>
+                    <li ng-repeat="losers in getLoseMenu(player.id)">
+                      <a href="#" ng-click="lose([player.id].concat(losers))">
+                        {{mjData.players[losers[0]].name}}{{losers.length>1?',':''}}
+                        {{mjData.players[losers[1]].name}}
+                      </a>
+                    </li>
+                  </ul>
+<!-- TODO: to be added back
                   <button class="btn btn-default"
-                          ng-click="lose(player.id)"
+                          ng-click="lose([player])"
                           ng-show="isLosing(player.id)">
                           Lose
                   </button>
+-->
                 </div>
               </form>
             </div>
@@ -170,10 +300,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
     <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="./js/Utils.js"></script>
-    <script src="./js/classes/Round.js"></script>
-    <script src="./js/classes/MJData.js"></script>
-    <script src="./js/controllers.js"></script>
+<?php foreach($js_resources as $js_resource){?>
+    <script src="<?=$js_resource?>"></script>
+<?php }?>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -3,8 +3,7 @@ var DEFAULT_PLAYER = 4;
 var MAX_PLAYER = 8;
 //var BASESCORE = $scope.BASESCORE = 2;
 var BASESCORE = 2;
-var HALF_SPICE_FROM = 4;
-var MIN_MAX_FARN = 1;
+var MIN_MAX_FARN = 0;
 var MAX_MAX_FARN = 13;
 
 var range = function(startNumber, endNumber){
@@ -57,22 +56,32 @@ mjCal.controller('indexController', function ($scope) {
   $scope.$watch('uploadJson', function(json){
     if(json){
       json = angular.fromJson(json);
-      $scope.mjData = new MJData(json);
-      startGame();
+      if(MJData.isCorrupted(json)){
+        console.error("json is corrupted");
+        alert("Uploaded progress is corrupted.");
+      }else{
+        $scope.mjData = new MJData(json);
+        startGame();
+      }
     }
   });
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
   $scope.playerNames = [];
+  $scope.chungStrategy = MJData.DEFAULT_CHUNG_STRATEGY;
+  $scope.farnScoreStrategy = MJData.DEFAULT_FARN_SCORE_STRATEGY;
+  $scope.halfSpicyFrom =  MJData.DEFAULT_HALF_SPICY_FROM;
   $scope.mjData = new MJData();
 
   $scope.submitAndStart = function(){
-    $scope.playerNames.forEach(function(playerName){
-      $scope.mjData.addPlayer(playerName);
-    });
-    // all start from 0
-    resetRound();
-    saveRound();
+    $scope.mjData.setChungStrategy($scope.chungStrategy);
+    $scope.mjData.setFarnScoreStrategy($scope.farnScoreStrategy);
+    $scope.mjData.setHalfSpicyFrom($scope.halfSpicyFrom=="custom"?$scope.halfSpicyFromCustom:$scope.halfSpicyFrom);
+    for(var i=0; i<$scope.numberOfPlayer; i++){
+      $scope.mjData.addPlayer($scope.playerNames[i] || '');
+    };
+    // for initial states (all player with 0 scores)
+    resetRound(); saveRound();
     startGame();
   };
 
@@ -89,19 +98,36 @@ mjCal.controller('indexController', function ($scope) {
     if($scope.mjData.rounds.length>1)
       $scope.mjData.rounds.pop();
   }
-  $scope.selfTouchedMenu = function(playerId){
-    this.memoize = this.memoize || {};
-    if(!(playerId in this.memoize)){
-      this.memoize[playerId] = combination($scope.mjData.players, 3).filter(function(losers){
-        return losers.map(function(loser){return loser.id}).indexOf(playerId)==-1;
-      });
+  $scope.getLoseMenu = function(playerId){
+    var menu = [];
+    var n = 3-$scope.numberOfPeopleEating();
+    angular.extend(menu, $scope.getRestPlayers(playerId, n));
+    round.getWinners().forEach(function(winner){
+      angular.extend(menu, $scope.getRestPlayers(winner, n));
+    });
+    return menu.filter(function(losers){
+      return losers.indexOf(playerId) == -1;
+    });
+  }
+  $scope.getRestPlayers = (function(){
+    var memoize = {};
+    return function(playerId, n){
+      if(memoize.numberOfPlayers != $scope.mjData.players.length){
+        memoize = {};
+        memoize.numberOfPlayers = $scope.mjData.players.length;
+      }
+      if(!(playerId in memoize)){
+        memoize[playerId] = {};
+      }
+      if(!(n in memoize[playerId])){
+        var playerIds = $scope.mjData.players.map(function(p){return p.id;});
+        memoize[playerId][n] = combination(playerIds, n).filter(function(losers){
+          return losers.indexOf(playerId)==-1;
+        });
+      }
+      return memoize[playerId][n];
     }
-    if(this.memoize.numberOfPlayers != $scope.mjData.players.length){
-      this.memoize = {};
-      this.memoize.numberOfPlayers = $scope.mjData.players.length;
-    }
-    return this.memoize[playerId];
-  };
+  })();
   $scope.addPlayer = function(){
     $scope.mjData.addPlayer('');
   }
@@ -111,6 +137,9 @@ mjCal.controller('indexController', function ($scope) {
   $scope.numberOfPeopleEating = function(){
     return round.wus.length;
   };
+  $scope.getEatingPlayers = function(){
+    return round.getWinners();
+  }
   $scope.isEating = function(playerId){
     return round.getWinners().indexOf(playerId)>-1;
   };
@@ -127,14 +156,13 @@ mjCal.controller('indexController', function ($scope) {
     round.addWu(playerId, numberOfFarn);
   };
   $scope.selfTouched = function(losers){
-    losers.forEach(function(loser){
-      round.addLoser(loser.id);
-    });
-    saveRound();
-    resetRound();
+    round.isSelfTouched = true;
+    $scope.lose(losers);
   };
-  $scope.lose = function(loserId){
-    round.addLoser(loserId);
+  $scope.lose = function(losers){
+    losers.forEach(function(loser){
+      round.addLoser(loser);
+    });
     saveRound();
     resetRound();
   };
