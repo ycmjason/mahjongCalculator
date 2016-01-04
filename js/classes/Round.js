@@ -2,7 +2,8 @@ function Round(json){
   var Wu = function(playerId, farn){
     this.playerId = playerId;
     this.farn = farn;
-    var strategy = new MJData.FarnScoreStrategy();
+    var Strategy = FarnScoreStrategy.parseStrategy(MJData.FarnScoreStrategy);
+    var strategy = new Strategy();
     this.getWuScore = function(){
       return strategy.getWuScore(this.farn);
     }
@@ -27,7 +28,8 @@ function Round(json){
   }
 
   this.getScore = function(playerId){
-    var strategy = new MJData.ChungStrategy(this.isSelfTouched);
+    var Strategy = ChungStrategy.parseStrategy(MJData.ChungStrategy);
+    var strategy = new Strategy(this.isSelfTouched);
     if(this.isWinner(playerId)){
       return strategy.getWinnerScore(this.findWuByWinner(playerId).getWuScore());
     }else if(this.isLoser(playerId)){

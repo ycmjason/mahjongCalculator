@@ -27,7 +27,7 @@ array_push($js_resources, "./js/controllers.js");
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   </head>
   <body ng-controller="indexController">
-    <section class="container" ng-cloak>
+    <section class="container ng-cloak">
       <header class="jumbotron">
         <h1>
           <img src="https://cdn0.iconfinder.com/data/icons/mahjong/128/man8.png" />
@@ -88,22 +88,37 @@ array_push($js_resources, "./js/controllers.js");
                 <!-- farn score strategy -->
                 <div class="form-group">
                   <label>Scoring method</label>
+                    (<a href="https://zh.wikipedia.org/wiki/%E5%BB%A3%E6%9D%B1%E9%BA%BB%E9%9B%80%E7%B1%8C%E7%A2%BC%E8%A8%88%E6%B3%95"  data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+                      Wiki page for scoring methods
+                    </a>)
                   <div>
-                    <label class="radio-inline">
+                    <label class="radio-inline"
+                           data-toggle="tooltip"
+                           data-placement="top"
+                           title="0 farn: 0.25 | 1 farn: 0.5 | 2 farn: 1"
+                           onmouseover="$(this).tooltip()"> 
                       <input name="farnScoreStrategy"
                              type="radio"
                              value="_25ChickenStrategy"
                              ng-model="farnScoreStrategy">
                       25 Chicken (HK tradition)
                     </label>
-                    <label class="radio-inline">
+                    <label class="radio-inline"
+                           data-toggle="tooltip"
+                           data-placement="top"
+                           title="0 farn: 0.5 | 1 farn: 1 | 2 farn: 2"
+                           onmouseover="$(this).tooltip()"> 
                       <input name="farnScoreStrategy"
                              type="radio"
                              value="_51Strategy"
                              ng-model="farnScoreStrategy">
                       51
                     </label>
-                    <label class="radio-inline">
+                    <label class="radio-inline"
+                           data-toggle="tooltip"
+                           data-placement="top"
+                           title="0 farn: 1 | 1 farn: 2 | 2 farn: 4"
+                           onmouseover="$(this).tooltip()"> 
                       <input name="farnScoreStrategy"
                              type="radio"
                              value="_12MosquitosStrategy"
@@ -130,7 +145,7 @@ array_push($js_resources, "./js/controllers.js");
                              value="4"
                              ng-focus="halfSpicyFromCustomFocus=false"
                              ng-model="halfSpicyFrom">
-                      4 (HK tradition)
+                      4 farn (HK tradition)
                     </label>
                     <label class="radio-inline" for="halfSpicyFromCustom">
                       <input id="halfSpicyFromCustom"
@@ -304,6 +319,11 @@ array_push($js_resources, "./js/controllers.js");
 <?php foreach($js_resources as $js_resource){?>
     <script src="<?=$js_resource?>"></script>
 <?php }?>
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -13,38 +13,39 @@ function MJData(json){
   this.rounds = [];
   if(!MJData.isCorrupted(json)){
     this.settings = json.settings;
-    var s1 = ChungStrategy.parseStrategy(json.settings.chungStrategy);
-    var s2 = FarnScoreStrategy.parseStrategy(json.settings.farnScoreStrategy);
-    MJData.ChungStrategy = s1;
-    MJData.FarnScoreStrategy = s2;
+    MJData.ChungStrategy = json.settings.chungStrategy;
+    MJData.FarnScoreStrategy = json.settings.farnScoreStrategy;
     MJData.halfSpicyFrom = json.settings.halfSpicyFrom;
     this.players = json.players;
     this.rounds = json.rounds.map(function(round){
       return new Round(round);
     });
   }
+  var resetRoundsWithNewSettings = function(rounds){
+    rounds.map(function(round){
+      return new Round(round);
+    });
+  }
+  this.setMaxFarn = function(farn){
+    this.settings.maxFarn = MJData.maxfarn = farn;
+    resetRoundsWithNewSettings(this.rounds);
+  }
   this.setHalfSpicyFrom = function(from){
-    this.settings.halfSpicyFrom = from;
-    MJData.halfSpicyFrom = from;
+    this.settings.halfSpicyFrom = MJData.halfSpicyFrom = from;
   }
   this.setChungStrategy = function(strategyName){
     if(ChungStrategy.isValidName(strategyName)){
-      this.settings.chungStrategy = strategyName;
-      MJData.ChungStrategy = ChungStrategy.parseStrategy(strategyName);
-      this.rounds.map(function(round){
-        return new Round(round);
-      });
+      this.settings.chungStrategy = MJData.ChungStrategy = strategyName;
+      resetRoundsWithNewSettings(this.rounds);
     }
   }
   this.setFarnScoreStrategy = function(strategyName){
     if(FarnScoreStrategy.isValidName(strategyName)){
-      this.settings.farnScoreStrategy = strategyName;
-      MJData.FarnScoreStrategy = FarnScoreStrategy.parseStrategy(strategyName);;
-      this.rounds.map(function(round){
-        return new Round(round);
-      });
+      this.settings.farnScoreStrategy = MJData.FarnScoreStrategy = strategyName;
+      resetRoundsWithNewSettings(this.rounds);
     }
   }
+
   this.addPlayer = function(name){
     name = name.trim();
     var player = new Player(this.players.length, name || 'Player '+(this.players.length+1));
@@ -100,8 +101,7 @@ MJData.isCorrupted = function(data){
            return a || b;
          });
 };
-MJData.DEFAULT_CHUNG_STRATEGY = "FullChungStrategy";
-MJData.DEFAULT_FARN_SCORE_STRATEGY = "_25ChickenStrategy";
+MJData.DEFAULT_CHUNG_STRATEGY = MJData.ChungStrategy = "FullChungStrategy";
+MJData.DEFAULT_FARN_SCORE_STRATEGY = MJData.FullChungStrategy = "_25ChickenStrategy";
 MJData.DEFAULT_HALF_SPICY_FROM = MJData.halfSpicyFrom = 4;
-MJData.ChungStrategy = ChungStrategy.parseStrategy(MJData.DEFAULT_CHUNG_STRATEGY);
-MJData.FarnScoreStrategy = FarnScoreStrategy.parseStrategy(MJData.DEFAULT_FARN_SCORE_STRATEGY);
+MJData.DEFAULT_MAX_FARN = MJData.maxFarn = 13;

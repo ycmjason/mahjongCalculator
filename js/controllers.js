@@ -1,8 +1,6 @@
 "use strict";
 var DEFAULT_PLAYER = 4;
 var MAX_PLAYER = 8;
-//var BASESCORE = $scope.BASESCORE = 2;
-var BASESCORE = 2;
 var MIN_MAX_FARN = 0;
 var MAX_MAX_FARN = 13;
 
@@ -56,6 +54,7 @@ mjCal.controller('indexController', function ($scope) {
   $scope.$watch('uploadJson', function(json){
     if(json){
       json = angular.fromJson(json);
+      console.log(json);
       if(MJData.isCorrupted(json)){
         console.error("json is corrupted");
         alert("Uploaded progress is corrupted.");
@@ -71,6 +70,7 @@ mjCal.controller('indexController', function ($scope) {
   $scope.chungStrategy = MJData.DEFAULT_CHUNG_STRATEGY;
   $scope.farnScoreStrategy = MJData.DEFAULT_FARN_SCORE_STRATEGY;
   $scope.halfSpicyFrom =  MJData.DEFAULT_HALF_SPICY_FROM;
+  $scope.maxFarn = MJData.DEFAULT_MAX_FARN;
   $scope.mjData = new MJData();
 
   $scope.submitAndStart = function(){
