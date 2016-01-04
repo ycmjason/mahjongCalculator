@@ -45,8 +45,9 @@ array_push($js_resources, "./js/controllers.js");
               <div class="form-group">
                 <label for="numberOfPlayer">Number of players</label>
                 <select id="numberOfPlayer" class="form-control" ng-model="numberOfPlayer">
-                  <option ng-repeat="n in range(DEFAULT_PLAYER, MAX_PLAYER)" value="{{n}}"
-                      ng-selected="n==DEFAULT_PLAYER">
+                  <option ng-repeat="n in range(DEFAULT_PLAYER, MAX_PLAYER)"
+                          value="{{n}}"
+                          ng-selected="n==DEFAULT_PLAYER">
                     {{n}}
                   </option>
                 </select>
@@ -88,9 +89,7 @@ array_push($js_resources, "./js/controllers.js");
                 <!-- farn score strategy -->
                 <div class="form-group">
                   <label>Scoring method</label>
-                    (<a href="https://zh.wikipedia.org/wiki/%E5%BB%A3%E6%9D%B1%E9%BA%BB%E9%9B%80%E7%B1%8C%E7%A2%BC%E8%A8%88%E6%B3%95"  data-toggle="tooltip" data-placement="left" title="Tooltip on left">
-                      Wiki page for scoring methods
-                    </a>)
+                    (<a href="https://zh.wikipedia.org/wiki/%E5%BB%A3%E6%9D%B1%E9%BA%BB%E9%9B%80%E7%B1%8C%E7%A2%BC%E8%A8%88%E6%B3%95"  data-toggle="tooltip" data-placement="left" title="Tooltip on left">Wiki page for scoring methods</a>)
                   <div>
                     <label class="radio-inline"
                            data-toggle="tooltip"
@@ -122,7 +121,6 @@ array_push($js_resources, "./js/controllers.js");
                       <input name="farnScoreStrategy"
                              type="radio"
                              value="_12MosquitosStrategy"
-                             ng-model="farnScoreStrategy">
                       12 Mosquitos
                     </label>
                   </div>
