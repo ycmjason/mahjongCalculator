@@ -187,20 +187,37 @@ array_push($js_resources, "./js/controllers.js");
           <div class="col-lg-5">
             <form class="form-inline">
               <div class="form-group">
-                <button class="btn btn-primary" type="button" ng-click="resetRound()">
-                Undo Eat
-                </button>
-              </div>
-              <div class="form-group">
-                <button class="btn btn-primary" type="button" ng-click="cancelLastRound()">
-                Cancel last round
-                </button>
-              </div>
-              <div class="form-group">
                 <a class="btn btn-success" href="{{mjData.toLink()}}" download="mjData.json">
                 <span class="glyphicon glyphicon-download"></span>
                 Download game progress
                 </a>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary"
+                        type="button"
+                        ng-click="cancelLastRound()"
+                        ng-show="mjData.rounds.length>1">
+                  <span class="glyphicon glyphicon-remove-sign"></span>
+                  Cancel last round
+                </button>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary"
+                        type="button"
+                        ng-click="resetRound()"
+                        ng-show="someoneIsEating()">
+                Undo Eat
+                </button>
+              </div>
+            </form>
+            <form class="form-inline">
+              <div class="form-group">
+                <button class="btn btn-default"
+                        type="button"
+                        ng-click="flush()">
+                  <span class="glyphicon glyphicon-tint"></span>
+                  Flush game
+                </button>
               </div>
             </form>
             <!--

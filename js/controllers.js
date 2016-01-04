@@ -166,6 +166,10 @@ mjCal.controller('indexController', function ($scope) {
     saveRound();
     resetRound();
   };
+  $scope.flush = function(){
+    saveRound();
+    resetRound();
+  }
 
   /* for graph */
   $scope.chart_type="chart-line";
