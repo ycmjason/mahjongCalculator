@@ -7,18 +7,18 @@
       </th>
     </tr>
   </thead>
-  <tr ng-repeat="(i, round) in mjData.rounds">
-    <td>{{i}}</td>
-    <td ng-repeat="player in mjData.players">
-      {{round.getScore(player.id)>0?"&plus;":""}}{{round.getScore(player.id)}}
-    </td>
-  </tr>
   <tr class="summaryTable_summary">
     <td><strong>Summary</strong></td>
     <td ng-repeat="player in mjData.players">
       <strong>
       {{mjData.getPlayerFinalScore(player.id)}}
       </strong>
+    </td>
+  </tr>
+  <tr ng-repeat="(i, round) in mjData.rounds.slice().reverse()">
+    <td>{{mjData.rounds.length-i-1}}</td>
+    <td ng-repeat="player in mjData.players">
+      {{round.getScore(player.id)>0?"&plus;":""}}{{round.getScore(player.id)}}
     </td>
   </tr>
 </table>
