@@ -3,6 +3,7 @@ function Round(json){
     this.playerId = playerId;
     this.farn = farn;
     var Strategy = FarnScoreStrategy.parseStrategy(MJData.FarnScoreStrategy);
+    this.farnScoreStrategy = Strategy;
     var strategy = new Strategy();
     this.getWuScore = function(){
       return strategy.getWuScore(this.farn);
@@ -13,6 +14,7 @@ function Round(json){
   this.wus = [];
   this.losers = [];
   this.isSelfTouched = false;
+  this.farnScoreStrategy = MJData.FarnScoreStrategy;
 
   if(!Round.isCorrupted(json)){
     this.wus = json.wus.map(function(wu){

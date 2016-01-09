@@ -54,7 +54,6 @@ mjCal.controller('indexController', function ($scope) {
   $scope.$watch('uploadJson', function(json){
     if(json){
       json = angular.fromJson(json);
-      console.log(json);
       if(MJData.isCorrupted(json)){
         console.error("json is corrupted");
         alert("Uploaded progress is corrupted.");
@@ -67,16 +66,19 @@ mjCal.controller('indexController', function ($scope) {
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
   $scope.playerNames = [];
-  $scope.chungStrategy = MJData.DEFAULT_CHUNG_STRATEGY;
-  $scope.farnScoreStrategy = MJData.DEFAULT_FARN_SCORE_STRATEGY;
-  $scope.halfSpicyFrom =  MJData.DEFAULT_HALF_SPICY_FROM;
+  $scope.advancedSettings={
+    chungStrategy: MJData.DEFAULT_CHUNG_STRATEGY,
+    farnScoreStrategy: MJData.DEFAULT_FARN_SCORE_STRATEGY,
+    halfSpicyFrom:  MJData.DEFAULT_HALF_SPICY_FROM
+  };
   $scope.maxFarn = MJData.DEFAULT_MAX_FARN;
   $scope.mjData = new MJData();
 
   $scope.submitAndStart = function(){
-    $scope.mjData.setChungStrategy($scope.chungStrategy);
-    $scope.mjData.setFarnScoreStrategy($scope.farnScoreStrategy);
-    $scope.mjData.setHalfSpicyFrom($scope.halfSpicyFrom=="custom"?$scope.halfSpicyFromCustom:$scope.halfSpicyFrom);
+    // close the advanced setting
+    $scope.advanced_setting_show = false;
+
+    // add players
     for(var i=0; i<$scope.numberOfPlayer; i++){
       $scope.mjData.addPlayer($scope.playerNames[i] || '');
     };
@@ -84,7 +86,38 @@ mjCal.controller('indexController', function ($scope) {
     resetRound(); saveRound();
     startGame();
   };
+  // start listening for change of strategies
+  $scope.$watch('advancedSettings.chungStrategy', function(s){
+    $scope.mjData.setChungStrategy(s);
+  });
+  $scope.$watch('advancedSettings.farnScoreStrategy', function(s){
+    $scope.mjData.setFarnScoreStrategy(s);
+  });
+  $scope.$watch('advancedSettings.halfSpicyFrom', function(s){
+    $scope.mjData.setHalfSpicyFrom(s=="custom"?$scope.advancedSettings.halfSpicyFromCustom:s);
+  });
+  $scope.$watch('advancedSettings.halfSpicyFromCustom', function(s){
+    if($scope.advancedSettings.halfSpicyFrom=='custom')
+      $scope.mjData.setHalfSpicyFrom(s);
+  });
 
+
+  $scope.$watch('started', function(started){
+    if(!started){ return; }
+    /* confirm before exiting */
+    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
+    window.onbeforeunload = function (e) {
+      e = e || window.event;
+
+      // For IE and Firefox prior to version 4
+      if (e) {
+          e.returnValue = confirmmsg;
+      }
+
+      // For Safari
+      return confirmmsg;
+    };
+  });
 
   /* game started */
   var round;
@@ -178,31 +211,7 @@ mjCal.controller('indexController', function ($scope) {
      * series: player
      * labels: round
      * data: score */
-    if(mjData instanceof MJData){
-      $scope.graph = mjData.getChartData();
-    }
+    $scope.graph = mjData.getChartData();
   }, true);
-  $scope.downloadMJData = function(){
-    
-  };
-
-  /* confirm before exiting */
-  $scope.$watch('started', function(started){
-    if(!started){ return; }
-    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
-    window.onbeforeunload = function (e) {
-      console.log(e);
-      e = e || window.event;
-
-      // For IE and Firefox prior to version 4
-      if (e) {
-          e.returnValue = confirmmsg;
-      }
-
-      // For Safari
-      return confirmmsg;
-    };
-  });
-  
 });
 

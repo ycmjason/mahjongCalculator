@@ -21,28 +21,28 @@ function MJData(json){
       return new Round(round);
     });
   }
-  var resetRoundsWithNewSettings = function(rounds){
-    rounds.map(function(round){
+  var resetRoundsWithNewSettings = function(_this){
+    _this.rounds = _this.rounds.map(function(round){
       return new Round(round);
     });
   }
   this.setMaxFarn = function(farn){
-    this.settings.maxFarn = MJData.maxfarn = farn;
-    resetRoundsWithNewSettings(this.rounds);
+    this.settings.maxFarn = MJData.maxFarn = farn;
   }
   this.setHalfSpicyFrom = function(from){
     this.settings.halfSpicyFrom = MJData.halfSpicyFrom = from;
+    resetRoundsWithNewSettings(this);
   }
   this.setChungStrategy = function(strategyName){
     if(ChungStrategy.isValidName(strategyName)){
       this.settings.chungStrategy = MJData.ChungStrategy = strategyName;
-      resetRoundsWithNewSettings(this.rounds);
+      resetRoundsWithNewSettings(this);
     }
   }
   this.setFarnScoreStrategy = function(strategyName){
     if(FarnScoreStrategy.isValidName(strategyName)){
       this.settings.farnScoreStrategy = MJData.FarnScoreStrategy = strategyName;
-      resetRoundsWithNewSettings(this.rounds);
+      resetRoundsWithNewSettings(this);
     }
   }
 
@@ -102,6 +102,6 @@ MJData.isCorrupted = function(data){
          });
 };
 MJData.DEFAULT_CHUNG_STRATEGY = MJData.ChungStrategy = "FullChungStrategy";
-MJData.DEFAULT_FARN_SCORE_STRATEGY = MJData.FullChungStrategy = "_25ChickenStrategy";
+MJData.DEFAULT_FARN_SCORE_STRATEGY = MJData.FarnScoreStrategy = "_25ChickenStrategy";
 MJData.DEFAULT_HALF_SPICY_FROM = MJData.halfSpicyFrom = 4;
 MJData.DEFAULT_MAX_FARN = MJData.maxFarn = 13;

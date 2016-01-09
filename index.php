@@ -59,107 +59,18 @@ array_push($js_resources, "./js/controllers.js");
               </div>
 <!-- advanced settings -->
               <div class="form-group">
-                  <a href="#" class="form-control-static" ng-click="advanced_setting_show=advanced_setting_show?false:true">
-                    <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
-                    <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
-                    advanced settings
-                  </a>
+                <button class="btn btn-primary"
+                        ng-click="advanced_setting_show=advanced_setting_show?false:true">
+                  <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
+                  <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
+                  Advanced Settings
+                </button>
               </div>
-              <div ng-show="advanced_setting_show">
-                <!-- Chung-ness -->
-                <div class="form-group">
-                  <label>Chung-ness</label>
-                  <div>
-                    <label class="radio-inline">
-                      <input name="chungStrategy"
-                             type="radio"
-                             value="HalfChungStrategy"
-                             ng-model="chungStrategy">
-                      Half Chung
-                    </label>
-                    <label class="radio-inline">
-                      <input name="chungStrategy"
-                             type="radio"
-                             value="FullChungStrategy"
-                             ng-model="chungStrategy">
-                      Full Chung (HK tradition)
-                    </label>
-                  </div>
-                </div>
-                <!-- farn score strategy -->
-                <div class="form-group">
-                  <label>Scoring method</label>
-                    (<a href="https://zh.wikipedia.org/wiki/%E5%BB%A3%E6%9D%B1%E9%BA%BB%E9%9B%80%E7%B1%8C%E7%A2%BC%E8%A8%88%E6%B3%95"  data-toggle="tooltip" data-placement="left" title="Tooltip on left">Wiki page for scoring methods</a>)
-                  <div>
-                    <label class="radio-inline"
-                           data-toggle="tooltip"
-                           data-placement="top"
-                           title="0 farn: 0.25 | 1 farn: 0.5 | 2 farn: 1"
-                           onmouseover="$(this).tooltip()"> 
-                      <input name="farnScoreStrategy"
-                             type="radio"
-                             value="_25ChickenStrategy"
-                             ng-model="farnScoreStrategy">
-                      25 Chicken (HK tradition)
-                    </label>
-                    <label class="radio-inline"
-                           data-toggle="tooltip"
-                           data-placement="top"
-                           title="0 farn: 0.5 | 1 farn: 1 | 2 farn: 2"
-                           onmouseover="$(this).tooltip()"> 
-                      <input name="farnScoreStrategy"
-                             type="radio"
-                             value="_51Strategy"
-                             ng-model="farnScoreStrategy">
-                      51
-                    </label>
-                    <label class="radio-inline"
-                           data-toggle="tooltip"
-                           data-placement="top"
-                           title="0 farn: 1 | 1 farn: 2 | 2 farn: 4"
-                           onmouseover="$(this).tooltip()"> 
-                      <input name="farnScoreStrategy"
-                             type="radio"
-                             value="_12MosquitosStrategy"
-                      12 Mosquitos
-                    </label>
-                  </div>
-                </div>
-                <!-- Chung-ness -->
-                <div class="form-group">
-                  <label>Half spicy from:</label>
-                  <div>
-                    <label class="radio-inline">
-                      <input name="halfSpicyFrom"
-                             type="radio"
-                             value="10000"
-                             ng-focus="halfSpicyFromCustomFocus=false"
-                             ng-model="halfSpicyFrom">
-                      Never half spicy
-                    </label>
-                    <label class="radio-inline">
-                      <input name="halfSpicyFrom"
-                             type="radio"
-                             value="4"
-                             ng-focus="halfSpicyFromCustomFocus=false"
-                             ng-model="halfSpicyFrom">
-                      4 farn (HK tradition)
-                    </label>
-                    <label class="radio-inline" for="halfSpicyFromCustom">
-                      <input id="halfSpicyFromCustom"
-                             name="halfSpicyFrom"
-                             type="radio"
-                             value="custom"
-                             ng-checked="halfSpicyFromCustomFocus"
-                             ng-model="halfSpicyFrom">
-                      <input type="text"
-                             size="3"
-                             ng-focus="halfSpicyFromCustomFocus=true"
-                             ng-model="halfSpicyFromCustom">
-                      </input>
-                    </label>
-                  </div>
-                </div>
+<!-- advanced settings -->
+              <div class="panel panel-default"
+                   ng-show="advanced_setting_show">
+                <div class="panel-body"
+                     ng-include="'./advancedSetting.html'"></div>
               </div>
 
 <!-- start button -->
@@ -185,6 +96,23 @@ array_push($js_resources, "./js/controllers.js");
       <main ng-if="started">
         <div class="row">
           <div class="col-lg-5">
+            <form>
+              <div class="form-group">
+                <button class="btn btn-primary"
+                        ng-click="advanced_setting_show=advanced_setting_show?false:true">
+                  <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
+                  <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
+                  Advanced Settings
+                </button>
+              </div>
+<!-- advanced setting -->
+              <div class="panel panel-default"
+                   ng-show="advanced_setting_show">
+                <div class="panel-body"
+                     ng-include="'./advancedSetting.html'"></div>
+              </div>
+              {{chungStrategy}}
+            </form>
             <form class="form-inline">
               <div class="form-group">
                 <a class="btn btn-success" href="{{mjData.toLink()}}" download="mjData.json">
