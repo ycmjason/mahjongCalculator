@@ -1,15 +1,4 @@
 function Round(json){
-  var Wu = function(playerId, farn){
-    this.playerId = playerId;
-    this.farn = farn;
-    var Strategy = FarnScoreStrategy.parseStrategy(MJData.FarnScoreStrategy);
-    this.farnScoreStrategy = Strategy;
-    var strategy = new Strategy();
-    this.getWuScore = function(){
-      return strategy.getWuScore(this.farn);
-    }
-  };
-
   var _round = this;
   this.wus = [];
   this.losers = [];
@@ -18,11 +7,12 @@ function Round(json){
 
   if(!Round.isCorrupted(json)){
     this.wus = json.wus.map(function(wu){
-      return new Wu(wu.playerId, wu.farn);
+      return new Round.Wu(wu.playerId, wu.farn);
     });
     this.losers = json.losers;
     this.isSelfTouched = json.isSelfTouched;
   }
+
   this.findWuByWinner = function(playerId){
     return this.wus.filter(function(wu){
       return wu.playerId==playerId;
@@ -58,7 +48,7 @@ function Round(json){
   
   this.addWu = function(playerId, farn){
     if(!(this.isWinner(playerId)))
-      this.wus.push(new Wu(playerId, farn));
+      this.wus.push(new Round.Wu(playerId, farn));
   };
   this.getWinners = function(){
     return this.wus.map(function(wu){
@@ -74,7 +64,22 @@ function Round(json){
       this.losers.push(playerId);
   };
 };
-
-Round.isCorrupted = function(data){
-  return data==undefined || data.wus==undefined || data.losers==undefined || data.isSelfTouched==undefined;
+Round.Wu = function(playerId, farn){
+  this.playerId = playerId;
+  this.farn = farn;
+  var Strategy = FarnScoreStrategy.parseStrategy(MJData.FarnScoreStrategy);
+  var strategy = new Strategy();
+  this.getWuScore = function(){
+    return strategy.getWuScore(this.farn);
+  }
 };
+Round.Wu.isCorrupted = isCorruptedFactory('playerId', 'farn');
+
+Round.isCorrupted = isCorruptedFactory('wus', 'losers', 'isSelfTouched',
+                                      ['wus', function(wus){
+                                        return wus.map(function(wu){
+                                          return Round.Wu.isCorrupted(wu);
+                                        }).reduce(function(a, b){
+                                          return a || b;
+                                        }, false);
+                                      }]);
