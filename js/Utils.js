@@ -22,12 +22,15 @@ var isCorruptedFactory = function(){
       return value == undefined;
     };
     for(i=0; i<args.length; i++){
-      var isString = typeof args[i] == 'string' || args[i] instanceof String;
-      var path = isString? args[i]: args[i][0];
-      var method = isString? defaultFunction: args[i][1];
+      var isString = function(s){
+        return typeof s == 'string' || s instanceof String;
+      };
+      var path = isString(arg[i])? args[i]: args[i][0];
+      var method = isString(arg[i])? defaultFunction: args[i][1];
       isCorrupted = isCorrupted || method(valueOf(json, path));
       if(isCorrupted){
         console.error(path+" is either not defiend or does not pass test as stated.");
+        break;
       }
     }
     return isCorrupted;
