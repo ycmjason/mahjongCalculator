@@ -16,23 +16,24 @@ var isCorruptedFactory = function(){
   }
   var args = arguments;
   return function(json){
-    var i;
-    var isCorrupted = json==undefined;
-    var defaultFunction = function(value){
+    if(json == undefined) return true;
+
+    var isUndefined = function(value){
       return value == undefined;
     };
-    for(i=0; i<args.length; i++){
-      var isString = function(s){
-        return typeof s == 'string' || s instanceof String;
-      };
-      var path = isString(arg[i])? args[i]: args[i][0];
-      var method = isString(arg[i])? defaultFunction: args[i][1];
-      isCorrupted = isCorrupted || method(valueOf(json, path));
-      if(isCorrupted){
+    var isString = function(s){
+      return typeof s == 'string' || s instanceof String;
+    };
+
+    for(var i=0; i<args.length; i++){
+      var path = isString(args[i])? args[i]: args[i][0];
+      var method = isString(args[i])? isUndefined: args[i][1];
+      if(method(valueOf(json, path))){
         console.error(path+" is either not defiend or does not pass test as stated.");
+        return true;
         break;
       }
     }
-    return isCorrupted;
+    return false;
   };
 }
