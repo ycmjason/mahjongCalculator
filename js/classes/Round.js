@@ -5,7 +5,7 @@ function Round(json){
   this.isSelfTouched = false;
   this.farnScoreStrategy = MJData.FarnScoreStrategy;
 
-  if(!Round.isCorrupted(json)){
+  if(json && !Round.isCorrupted(json)){
     this.wus = json.wus.map(function(wu){
       return new Round.Wu(wu.playerId, wu.farn);
     });

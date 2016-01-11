@@ -18,14 +18,16 @@ var isCorruptedFactory = function(){
   return function(json){
     var i;
     var isCorrupted = json==undefined;
+    var defaultFunction = function(value){
+      return value == undefined;
+    };
     for(i=0; i<args.length; i++){
-      if(typeof args[i] == 'string' || args[i] instanceof String){
-        var path = args[i];
-        isCorrupted = isCorrupted || valueOf(json, path)==undefined;
-      }else{
-        var path = args[i][0];
-        var method = args[i][1];
-        isCorrupted = isCorrupted || method(valueOf(json, path));
+      var isString = typeof args[i] == 'string' || args[i] instanceof String;
+      var path = isString? args[i]: args[i][0];
+      var method = isString? defaultFunction: args[i][1];
+      isCorrupted = isCorrupted || method(valueOf(json, path));
+      if(isCorrupted){
+        console.error(path+" is either not defiend or does not pass test as stated.");
       }
     }
     return isCorrupted;

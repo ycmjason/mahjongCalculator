@@ -11,7 +11,7 @@ function MJData(json){
   // Set static strategy setting
   this.players = [];
   this.rounds = [];
-  if(!MJData.isCorrupted(json)){
+  if(json && !MJData.isCorrupted(json)){
     this.settings = json.settings;
     MJData.ChungStrategy = json.settings.chungStrategy;
     MJData.FarnScoreStrategy = json.settings.farnScoreStrategy;
