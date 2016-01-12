@@ -58,7 +58,6 @@ mjCal.controller('indexController', function ($scope) {
     farnScoreStrategy: MJData.DEFAULT_FARN_SCORE_STRATEGY,
     halfSpicyFrom:  MJData.DEFAULT_HALF_SPICY_FROM
   };
-  $scope.maxFarn = MJData.DEFAULT_MAX_FARN;
   var mjData = $scope.mjData = new MJData();
 
   $scope.$watch('uploadJson', function(json){

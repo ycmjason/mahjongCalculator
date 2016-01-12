@@ -268,6 +268,7 @@ array_push($js_resources, "./js/controllers.js");
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+<?php if($_SERVER[HTTP_HOST]=="ycmjason.com"){ ?>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -278,5 +279,6 @@ array_push($js_resources, "./js/controllers.js");
       ga('send', 'pageview');
 
     </script>
+<?php }?>
   </body>
 </html>

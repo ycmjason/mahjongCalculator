@@ -19,9 +19,6 @@ function MJData(json){
     this.rounds = [];
   }
 
-  this.setMaxFarn = function(farn){
-    this.settings.maxFarn = farn;
-  }
   this.setHalfSpicyFrom = function(from){
     this.settings.halfSpicyFrom = from;
   }
@@ -74,7 +71,6 @@ function MJData(json){
     return "data: text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this));
   };
 };
-MJData.DEFAULT_CHUNG_STRATEGY = MJData.ChungStrategy = "FullChungStrategy";
-MJData.DEFAULT_FARN_SCORE_STRATEGY = MJData.FarnScoreStrategy = "_25ChickenStrategy";
-MJData.DEFAULT_HALF_SPICY_FROM = MJData.halfSpicyFrom = 4;
-MJData.DEFAULT_MAX_FARN = MJData.maxFarn = 13;
+MJData.DEFAULT_CHUNG_STRATEGY = "FullChungStrategy";
+MJData.DEFAULT_FARN_SCORE_STRATEGY = "_25ChickenStrategy";
+MJData.DEFAULT_HALF_SPICY_FROM = 4;
