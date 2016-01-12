@@ -14,6 +14,7 @@ array_push($js_resources, "./js/classes/strategies/farnScore/12MosquitosStrategy
 
 array_push($js_resources, "./js/classes/Round.js");
 array_push($js_resources, "./js/classes/MJData.js");
+array_push($js_resources, "./js/classes/isCleans.js");
 array_push($js_resources, "./js/controllers.js");
 ?>
 <html ng-app="mjCal">

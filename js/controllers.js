@@ -5,9 +5,9 @@ var MIN_MAX_FARN = 0;
 var MAX_MAX_FARN = 13;
 
 var range = function(startNumber, endNumber){
-  var arr = new Array();
+  var arr = [];
   for(var i=0; i<endNumber - startNumber + 1; ++i){
-    arr[i] = startNumber+i;
+    arr.push(startNumber+i);
   }
   return arr;
 };
@@ -50,19 +50,6 @@ mjCal.controller('indexController', function ($scope) {
 
   $scope.started = false;
   $scope.range = range;
-  
-  $scope.$watch('uploadJson', function(json){
-    if(json){
-      json = angular.fromJson(json);
-      if(MJData.isCorrupted(json)){
-        console.error("json is corrupted");
-        alert("Uploaded progress is corrupted.");
-      }else{
-        $scope.mjData = new MJData(json);
-        startGame();
-      }
-    }
-  });
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
   $scope.playerNames = [];
@@ -72,7 +59,21 @@ mjCal.controller('indexController', function ($scope) {
     halfSpicyFrom:  MJData.DEFAULT_HALF_SPICY_FROM
   };
   $scope.maxFarn = MJData.DEFAULT_MAX_FARN;
-  $scope.mjData = new MJData();
+  var mjData = $scope.mjData = new MJData();
+
+  $scope.$watch('uploadJson', function(json){
+    if(json){
+      json = angular.fromJson(json);
+      if(MJData.isClean(json)){
+        mjData = $scope.mjData = new MJData(json);
+        startGame();
+      }else{
+        console.error("json is corrupted");
+        alert("Uploaded progress is corrupted.");
+      }
+    }
+  });
+
 
   $scope.submitAndStart = function(){
     // close the advanced setting
@@ -80,7 +81,7 @@ mjCal.controller('indexController', function ($scope) {
 
     // add players
     for(var i=0; i<$scope.numberOfPlayer; i++){
-      $scope.mjData.addPlayer($scope.playerNames[i] || '');
+      mjData.addPlayer($scope.playerNames[i] || '');
     };
     // for initial states (all player with 0 scores)
     resetRound(); saveRound();
@@ -88,17 +89,17 @@ mjCal.controller('indexController', function ($scope) {
   };
   // start listening for change of strategies
   $scope.$watch('advancedSettings.chungStrategy', function(s){
-    $scope.mjData.setChungStrategy(s);
+    mjData.setChungStrategy(s);
   });
   $scope.$watch('advancedSettings.farnScoreStrategy', function(s){
-    $scope.mjData.setFarnScoreStrategy(s);
+    mjData.setFarnScoreStrategy(s);
   });
   $scope.$watch('advancedSettings.halfSpicyFrom', function(s){
-    $scope.mjData.setHalfSpicyFrom(s=="custom"?$scope.advancedSettings.halfSpicyFromCustom:s);
+    mjData.setHalfSpicyFrom(s=="custom"?$scope.advancedSettings.halfSpicyFromCustom:s);
   });
   $scope.$watch('advancedSettings.halfSpicyFromCustom', function(s){
     if($scope.advancedSettings.halfSpicyFrom=='custom')
-      $scope.mjData.setHalfSpicyFrom(s);
+      mjData.setHalfSpicyFrom(s);
   });
 
 
@@ -118,18 +119,19 @@ mjCal.controller('indexController', function ($scope) {
       return confirmmsg;
     };
   });
+  
 
   /* game started */
   var round;
   var saveRound = function(){
-    $scope.mjData.addRound(round);
+    mjData.addRound(round);
   };
   var resetRound = $scope.resetRound = function(){
-    round = $scope.round = new Round();
+    round = $scope.round = new Round(mjData.settings);
   };
   $scope.cancelLastRound = function(){
-    if($scope.mjData.rounds.length>1)
-      $scope.mjData.rounds.pop();
+    if(mjData.rounds.length>1)
+      mjData.rounds.pop();
   }
   $scope.getLoseMenu = function(playerId){
     var menu = [];
@@ -145,15 +147,15 @@ mjCal.controller('indexController', function ($scope) {
   $scope.getRestPlayers = (function(){
     var memoize = {};
     return function(playerId, n){
-      if(memoize.numberOfPlayers != $scope.mjData.players.length){
+      if(memoize.numberOfPlayers != mjData.players.length){
         memoize = {};
-        memoize.numberOfPlayers = $scope.mjData.players.length;
+        memoize.numberOfPlayers = mjData.players.length;
       }
       if(!(playerId in memoize)){
         memoize[playerId] = {};
       }
       if(!(n in memoize[playerId])){
-        var playerIds = $scope.mjData.players.map(function(p){return p.id;});
+        var playerIds = mjData.players.map(function(p){return p.id;});
         memoize[playerId][n] = combination(playerIds, n).filter(function(losers){
           return losers.indexOf(playerId)==-1;
         });
@@ -162,7 +164,7 @@ mjCal.controller('indexController', function ($scope) {
     }
   })();
   $scope.addPlayer = function(){
-    $scope.mjData.addPlayer('');
+    mjData.addPlayer('');
   }
   $scope.someoneIsEating = function(){
     return $scope.numberOfPeopleEating()>0;

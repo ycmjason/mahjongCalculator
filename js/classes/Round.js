@@ -1,16 +1,21 @@
-function Round(json){
+function Round()/* (round, settings) or (settings) */{
   var _round = this;
-  this.wus = [];
-  this.losers = [];
-  this.isSelfTouched = false;
-  this.farnScoreStrategy = MJData.FarnScoreStrategy;
 
-  if(json && !Round.isCorrupted(json)){
-    this.wus = json.wus.map(function(wu){
-      return new Round.Wu(wu.playerId, wu.farn);
+  /* arguments checking */
+  if(arguments[0] && Round.isClean(arguments[0]) &&
+     arguments[1] && MJData.isCleanSettings(arguments[1])){
+    var round = arguments[0];
+    var settings = arguments[1];
+    this.losers = round.losers;
+    this.isSelfTouched = round.isSelfTouched;
+    this.wus = round.wus.map(function(wu){
+      return new Round.Wu(wu, settings);
     });
-    this.losers = json.losers;
-    this.isSelfTouched = json.isSelfTouched;
+  }else if(arguments[0] && MJData.isCleanSettings(arguments[0])){
+    var settings = arguments[0];
+    this.wus = [];
+    this.losers = [];
+    this.isSelfTouched = false;
   }
 
   this.findWuByWinner = function(playerId){
@@ -20,18 +25,22 @@ function Round(json){
   }
 
   this.getScore = function(playerId){
-    var Strategy = ChungStrategy.parseStrategy(MJData.ChungStrategy);
-    var strategy = new Strategy(this.isSelfTouched);
+    var Strategy = ChungStrategy.parseStrategy(settings.chungStrategy);
+    var chungStrategy = new Strategy(this.isSelfTouched);
+
     if(this.isWinner(playerId)){
-      return strategy.getWinnerScore(this.findWuByWinner(playerId).getWuScore());
+      return chungStrategy.getWinnerScore(this.findWuByWinner(playerId).getWuScore());
     }else if(this.isLoser(playerId)){
       return this.wus.map(function(wu){
-        return strategy.getLoserScore(wu.getWuScore(), _round.losers.length, _round.didOutChung(playerId));
-      }).reduce(function(s1, s2){
-        return s1+s2;
-      });
+          return chungStrategy.getLoserScore(wu.getWuScore(settings),
+                                             _round.losers.length,
+                                             _round.didOutChung(playerId));
+        }).reduce(function(s1, s2){
+          return s1+s2;
+        });
+    }else{
+      return 0;
     }
-    return 0;
   };
 
   this.isWinner = function(playerId){
@@ -48,7 +57,7 @@ function Round(json){
   
   this.addWu = function(playerId, farn){
     if(!(this.isWinner(playerId)))
-      this.wus.push(new Round.Wu(playerId, farn));
+      this.wus.push(new Round.Wu(playerId, farn, settings));
   };
   this.getWinners = function(){
     return this.wus.map(function(wu){
@@ -64,22 +73,25 @@ function Round(json){
       this.losers.push(playerId);
   };
 };
-Round.Wu = function(playerId, farn){
-  this.playerId = playerId;
-  this.farn = farn;
-  var Strategy = FarnScoreStrategy.parseStrategy(MJData.FarnScoreStrategy);
-  var strategy = new Strategy();
+Round.Wu = function()/* (playerId, farn, settings) or (wu, settings)*/{
+  /* parameters checkings */
+  if(arguments[0] && Round.Wu.isClean(arguments[0]) &&
+     arguments[1] && MJData.isCleanSettings(arguments[1])){
+    // case: (wu, settings)
+    var wu = arguments[0];
+    var settings = arguments[1];
+    this.playerId = wu.playerId;
+    this.farn = wu.farn;
+  }else{
+    // case: (playerId, farn, settings)
+    this.playerId = arguments[0];
+    this.farn = arguments[1];
+    var settings = arguments[2];
+  }
+
   this.getWuScore = function(){
-    return strategy.getWuScore(this.farn);
+    var Strategy = FarnScoreStrategy.parseStrategy(settings.farnScoreStrategy);
+    var farnScoreStrategy = new Strategy();
+    return farnScoreStrategy.getWuScore(settings, this.farn);
   }
 };
-Round.Wu.isCorrupted = isCorruptedFactory('playerId', 'farn');
-
-Round.isCorrupted = isCorruptedFactory('wus', 'losers', 'isSelfTouched',
-                                      ['wus', function(wus){
-                                        return wus.map(function(wu){
-                                          return Round.Wu.isCorrupted(wu);
-                                        }).reduce(function(a, b){
-                                          return a || b;
-                                        }, false);
-                                      }]);

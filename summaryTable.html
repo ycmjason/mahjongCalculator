@@ -18,7 +18,7 @@
   <tr ng-repeat="(i, round) in mjData.rounds.slice().reverse()">
     <td>{{mjData.rounds.length-i-1}}</td>
     <td ng-repeat="player in mjData.players">
-      {{round.getScore(player.id)>0?'&plus;':''}}{{round.getScore(player.id)}}
+      {{round.isWinner(player.id)?'&plus;':''}}{{round.getScore(player.id)}}
     </td>
   </tr>
 </table>

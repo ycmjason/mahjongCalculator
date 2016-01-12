@@ -1,4 +1,4 @@
-var combination = function(xs, n){
+function combination(xs, n){
   if(!xs) console.error("Given null arr.");
   if(n==0) return [[]];
   if(xs.length==0) return [];
@@ -8,7 +8,7 @@ var combination = function(xs, n){
   }).concat(combination(xs.slice(1, xs.length), n));
 };
 
-var isCorruptedFactory = function(){
+function isCleanFactory(){
   var valueOf = function(obj, fieldPath){
     var firstPart = fieldPath.split('.')[0];
     var restPath = fieldPath.substring(firstPart.length+1);
@@ -16,10 +16,10 @@ var isCorruptedFactory = function(){
   }
   var args = arguments;
   return function(json){
-    if(json == undefined) return true;
+    if(json == undefined) return false;
 
-    var isUndefined = function(value){
-      return value == undefined;
+    var isDefined = function(value){
+      return value != undefined;
     };
     var isString = function(s){
       return typeof s == 'string' || s instanceof String;
@@ -27,13 +27,13 @@ var isCorruptedFactory = function(){
 
     for(var i=0; i<args.length; i++){
       var path = isString(args[i])? args[i]: args[i][0];
-      var method = isString(args[i])? isUndefined: args[i][1];
-      if(method(valueOf(json, path))){
-        console.error(path+" is either not defiend or does not pass test as stated.");
-        return true;
+      var method = isString(args[i])? isDefined: args[i][1];
+      if(!method(valueOf(json, path))){
+        console.log(path+" is either not defiend or does not pass test as stated.");
+        return false;
         break;
       }
     }
-    return false;
+    return true;
   };
 }
