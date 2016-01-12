@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+$VERSION = "v1.0";
+
 $js_resources = array();
 array_push($js_resources, "./js/Utils.js");
 array_push($js_resources, "./js/classes/strategies/chung/ChungStrategy.js");
@@ -251,8 +253,18 @@ array_push($js_resources, "./js/controllers.js");
       </main>
       <footer>
         
-        <div class="text-right"> <em>This project is open source. Available on <a href="https://github.com/ycmjason/mahjongCalculator" target="_blank">github</a>.</div>
-        <div class="text-right"> <em>All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.</em></div>
+        <em>
+          <div class="text-right">
+            This project is open source. Available on
+            <a href="https://github.com/ycmjason/mahjongCalculator" target="_blank">github</a>.
+          </div>
+          <div class="text-right">
+            All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.
+          </div>
+          <div class="text-right">
+            <small><u>current version <?=$VERSION?></u></small>
+          </div>
+        </em>
       </footer>
     </section>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
