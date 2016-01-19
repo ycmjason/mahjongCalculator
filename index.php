@@ -3,6 +3,9 @@
 require_once("version.php");
 
 $js_resources = array();
+array_push($js_resources, "./js/lib/socket.io.js");
+array_push($js_resources, "./js/lib/angular-socket-io.min.js");
+
 array_push($js_resources, "./js/Utils.js");
 array_push($js_resources, "./js/classes/strategies/chung/ChungStrategy.js");
 array_push($js_resources, "./js/classes/strategies/chung/HalfChungStrategy.js");
@@ -17,6 +20,8 @@ array_push($js_resources, "./js/classes/strategies/farnScore/12MosquitosStrategy
 array_push($js_resources, "./js/classes/Round.js");
 array_push($js_resources, "./js/classes/MJData.js");
 array_push($js_resources, "./js/classes/isCleans.js");
+
+array_push($js_resources, "./js/mjCal.js");
 array_push($js_resources, "./js/controllers.js");
 ?>
 <html ng-app="mjCal">
@@ -24,7 +29,7 @@ array_push($js_resources, "./js/controllers.js");
     <title>Mahjong Score Calculator</title>
     <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAABX1BMVEX///+lZRmhYRK4qpjQ0MzOzszGxsO/v728vLq6ura2trO0tLKysq+vr6ysrKurq6ilpaGwsK2hoZ+hoZ6iop+hoZ/IyMS2QECoGhrc29jKysbMzMjGxsLJycbNzcmqXVvm5eSxNDSvNDSjOTnIu7fOz8vJyceaCgqoHR2jHh3LrarOzsrLy8mZAACsWVfMvrrR0c3Pz8vKysqRAADNxMHv5eTLfHzQ0MzMzMrR0c7S0s/LubbKubbT0c7V1dHQ0M3OzsvRyMXU1NDW1tLPz8zY2NTX19LX19PZ2dXU1NHa2tbc3Nnb29dERES2trLZ2dbS0tA6OjpsbGwfHx/e3trd3dnT09Dg4NwaGhri4t7j49/f39vT09Hl5uJCQkLn5+Tk5eHT08/u7uzx8u/x8e7v7+3u7uvDwbvu7urs7Ojp6ebq6uft7env7+vk5N/o6OTl5eLm5uPp6eXr6+ff3tsaoEqqAAAAFHRSTlMARuP7+/v7+/v7+/v7+/v7he98t4S+M5gAAAG6SURBVBiV7dpHT1VRFEBhBEREKYJY6SpgFxtKbxZQAXtBUBQL2Mv/D7O1JzshhAk5Wd9wn7fPXXf0kpdXUZHYg//4h7/4g9+I2S/E7k9UIivYgoEGGmiggbs8sArxuB/4jm/YSKzjKyL1Cww00EADDSwvsBqf8QlriY/IPhezD1iFgQYaaKCB5QXuxXvEl967xAqy02XEfW9hoIEGGmhgeYE1WMKbxOvEK8QsNl7iBQw00EADDSwvcB+e41niKeJF4vQJHiNOF2GggQYaaGB5gbVYwDwe4SEeIJuFORhooIEGGlhy4H7M4n7iHrLTu4jZHczAQAMNNNDA8gLrED+STSemEpOIWWzEHwEmYKCBBhpoYHmBBzCOuHoMo4iYEQxjCLdxCwYaaKCBBpYXeBCDiMCbuIHruIbVRLzwVRhooIEGGlheYD0GEKlXcBmXcBGDibjvAgw00EADDSwvsAHnEVefw1n0ow9ZVuiFgQYaaKCB5QU2IgLP4DROoQfd6EInOtAOAw000EADywtsQhtO4gSOIx58DEcRu0dwCAYaaKCBBpYXGJrRisPbFrst2FGWgQYaaKCBuydwE1z1+XlhZbgqAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -33,7 +38,7 @@ array_push($js_resources, "./js/controllers.js");
     <section class="container ng-cloak">
       <header class="jumbotron">
         <h1>
-          <img src="https://cdn0.iconfinder.com/data/icons/mahjong/128/man8.png" />
+          <img src="//cdn0.iconfinder.com/data/icons/mahjong/128/man8.png" />
           Mahjong Score Calculator
         </h1>
       </header>
@@ -47,11 +52,11 @@ array_push($js_resources, "./js/controllers.js");
         <?php include("footer.html"); ?>
       </footer>
     </section>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
     <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <?php foreach($js_resources as $js_resource){?>
     <script src="<?=$js_resource?>"></script>
 <?php }?>

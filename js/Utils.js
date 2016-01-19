@@ -7,3 +7,10 @@ function combination(xs, n){
     return ret.concat(c);
   }).concat(combination(xs.slice(1, xs.length), n));
 };
+function range(startNumber, endNumber){
+  var arr = [];
+  for(var i=0; i<endNumber - startNumber + 1; ++i){
+    arr.push(startNumber+i);
+  }
+  return arr;
+};

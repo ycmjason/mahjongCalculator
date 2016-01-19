@@ -4,43 +4,48 @@ var MAX_PLAYER = 8;
 var MIN_MAX_FARN = 0;
 var MAX_MAX_FARN = 13;
 
-var range = function(startNumber, endNumber){
-  var arr = [];
-  for(var i=0; i<endNumber - startNumber + 1; ++i){
-    arr.push(startNumber+i);
-  }
-  return arr;
-};
-
-var mjCal = angular.module('mjCal', ['chart.js']);
-
-mjCal.config(['$compileProvider', function ($compileProvider) {
-  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data):/);
-}]);
-mjCal.directive("fileread", [function () {
-    return {
-        scope: {
-            fileread: "="
-        },
-        link: function (scope, element, attributes) {
-            element.bind("change", function (changeEvent) {
-                var reader = new FileReader();
-                reader.onload = function (loadEvent) {
-                    scope.$apply(function () {
-                        scope.fileread = loadEvent.target.result;
-                    });
-                }
-                reader.readAsText(changeEvent.target.files[0]);
-            });
-        }
+mjCal.controller('indexController', function ($scope, socket) {
+  var startGame = function(isNewGame){
+    if(isNewGame){
+      socket.emit('new game', mjData);
     }
-}]);
-
-
-mjCal.controller('indexController', function ($scope) {
-  var startGame = function(){
+    socket.on('update game code', function(c){
+      setCode(c);
+    });
+    socket.on('update mjdata', function(json){
+      setMjData(json);
+    });
+    $scope.$watch('mjData', function(mjData, oldmjData){
+      if($scope.code=='') return;
+      if(!angular.equals(mjData, oldmjData)){
+        socket.emit('update game', {
+          code: $scope.code,
+          mjData: mjData
+        });
+      }
+    }, true);
     $scope.started = true;
     resetRound();
+  };
+  var mjData;
+  var setMjData = function(json){
+    mjData = $scope.mjData = json;
+    $scope.advancedSettings.chungStrategy = json.settings.chungStrategy;
+    $scope.advancedSettings.farnScoreStrategy = json.settings.farnScoreStrategy;
+    if(json.settings.halfSpicyFrom==4 || json.settings.halfSpicyFrom==10000){
+      $scope.advancedSettings.halfSpicyFrom = json.settings.halfSpicyFrom;
+    }else{
+      $scope.advancedSettings.halfSpicyFrom = 'custom';
+      $scope.advancedSettings.halfSpicyFromCustom = json.settings.halfSpicyFrom;
+    }
+  };
+  var code;
+  $scope.$watch('code', function(c){
+    $scope.codeErrorMsg='';
+    setCode(c.toLowerCase());
+  });
+  var setCode = function(c){
+    code = $scope.code = c;
   };
 
   $scope.DEFAULT_PLAYER = DEFAULT_PLAYER;
@@ -50,6 +55,22 @@ mjCal.controller('indexController', function ($scope) {
 
   $scope.started = false;
   $scope.range = range;
+  // join existing game
+  $scope.code='';
+  $scope.joinGame = function(){
+    if($scope.code.length == 4) socket.emit('join game', $scope.code);
+  }
+  socket.on('[fail] join game', function(msg){
+    $scope.codeErrorMsg = msg;
+  });
+  socket.on('update mjData', function(mjData){
+    if(MJData.isClean(mjData)){
+      setMjData(new MJData(mjData));
+      if(!$scope.started){
+        startGame(false);
+      }
+    }
+  });
 
   $scope.numberOfPlayer = DEFAULT_PLAYER;
   $scope.playerNames = [];
@@ -58,14 +79,14 @@ mjCal.controller('indexController', function ($scope) {
     farnScoreStrategy: MJData.DEFAULT_FARN_SCORE_STRATEGY,
     halfSpicyFrom:  MJData.DEFAULT_HALF_SPICY_FROM
   };
-  var mjData = $scope.mjData = new MJData();
+  setMjData(new MJData());
 
   $scope.$watch('uploadJson', function(json){
     if(json){
       json = angular.fromJson(json);
       if(MJData.isClean(json)){
-        mjData = $scope.mjData = new MJData(json);
-        startGame();
+        setMjData(new MJData(json));
+        startGame(true);
       }else{
         console.error("json is corrupted");
         alert("Uploaded progress is corrupted.");
@@ -84,7 +105,7 @@ mjCal.controller('indexController', function ($scope) {
     };
     // for initial states (all player with 0 scores)
     resetRound(); saveRound();
-    startGame();
+    startGame(true);
   };
   // start listening for change of strategies
   $scope.$watch('advancedSettings.chungStrategy', function(s){
