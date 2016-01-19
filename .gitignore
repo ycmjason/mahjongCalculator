@@ -1,2 +1,3 @@
 /database/*
 *.swp
+.DS_Store
