@@ -9,12 +9,26 @@ mjCal.controller('indexController', function ($scope, socket) {
     if(isNewGame){
       socket.emit('new game', mjData);
     }
-    socket.on('update game code', function(c){
-      setCode(c);
-    });
     socket.on('update mjdata', function(json){
       setMjData(json);
     });
+
+    /* confirm before exiting */
+    (function(){
+      var confirmmsg="Have you save your game? You will lose your game progress unless you save it or this is not the last session of this game.";
+      window.onbeforeunload = function (e) {
+        e = e || window.event;
+
+        // For IE and Firefox prior to version 4
+        if (e) {
+            e.returnValue = confirmmsg;
+        }
+
+        // For Safari
+        return confirmmsg;
+      };
+    })()
+
     $scope.$watch('mjData', function(mjData, oldmjData){
       if($scope.code=='') return;
       if(!angular.equals(mjData, oldmjData)){
@@ -27,6 +41,13 @@ mjCal.controller('indexController', function ($scope, socket) {
     $scope.started = true;
     resetRound();
   };
+  socket.on('update game code', function(c){
+    setCode(c);
+  });
+  socket.on('update game userNumber', function(n){
+    $scope.userNumber = n;
+  });
+
   var mjData;
   var setMjData = function(json){
     mjData = $scope.mjData = json;
@@ -122,24 +143,6 @@ mjCal.controller('indexController', function ($scope, socket) {
       mjData.setHalfSpicyFrom(s);
   });
 
-
-  $scope.$watch('started', function(started){
-    if(!started){ return; }
-    /* confirm before exiting */
-    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
-    window.onbeforeunload = function (e) {
-      e = e || window.event;
-
-      // For IE and Firefox prior to version 4
-      if (e) {
-          e.returnValue = confirmmsg;
-      }
-
-      // For Safari
-      return confirmmsg;
-    };
-  });
-  
 
   /* game started */
   var round;
