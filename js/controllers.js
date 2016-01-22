@@ -10,15 +10,16 @@ mjCal.controller('indexController', function ($scope, socket) {
       socket.emit('new game', mjData);
     }
 
-    //reconnection happens
+    /* machanism to do on reconnection,
+     * attempt to rejoin game, if fail, create new game and notify user */
     socket.on('connect', function(json){
       // attempt to reconnect the previous game
       socket.emit('join game', $scope.code);
-      socket.on('[fail] join game', function(msg){
-        // code expired
-        socket.emit('new game', mjData);
-        alert('The code of this game is changed. Please ask other user to reload the page and type in this new code.');
-      });
+    });
+    socket.on('[fail] join game', function(msg){
+      // code expired
+      socket.emit('new game', mjData);
+      alert('The code of this game is changed. Please ask other user to reload the page and type in this new code.');
     });
 
     socket.on('update mjdata', function(json){
