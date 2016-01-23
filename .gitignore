@@ -1,3 +1,4 @@
 /database/*
 *.swp
 .DS_Store
+combination.hs
