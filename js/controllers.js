@@ -9,12 +9,39 @@ mjCal.controller('indexController', function ($scope, socket) {
     if(isNewGame){
       socket.emit('new game', mjData);
     }
-    socket.on('update game code', function(c){
-      setCode(c);
+
+    /* machanism to do on reconnection,
+     * attempt to rejoin game, if fail, create new game and notify user */
+    socket.on('connect', function(json){
+      // attempt to reconnect the previous game
+      socket.emit('join game', $scope.code);
     });
+    socket.on('[fail] join game', function(msg){
+      // code expired
+      socket.emit('new game', mjData);
+      alert('The code of this game is changed. Please ask other user to reload the page and type in this new code.');
+    });
+
     socket.on('update mjdata', function(json){
       setMjData(json);
     });
+
+    /* confirm before exiting */
+    (function(){
+      var confirmmsg="Have you save your game? You will lose your game progress unless you save it or this is not the last session of this game.";
+      window.onbeforeunload = function (e) {
+        e = e || window.event;
+
+        // For IE and Firefox prior to version 4
+        if (e) {
+            e.returnValue = confirmmsg;
+        }
+
+        // For Safari
+        return confirmmsg;
+      };
+    })()
+
     $scope.$watch('mjData', function(mjData, oldmjData){
       if($scope.code=='') return;
       if(!angular.equals(mjData, oldmjData)){
@@ -27,6 +54,13 @@ mjCal.controller('indexController', function ($scope, socket) {
     $scope.started = true;
     resetRound();
   };
+  socket.on('update game code', function(c){
+    setCode(c);
+  });
+  socket.on('update game userNumber', function(n){
+    $scope.userNumber = n;
+  });
+
   var mjData;
   var setMjData = function(json){
     mjData = $scope.mjData = json;
@@ -122,24 +156,6 @@ mjCal.controller('indexController', function ($scope, socket) {
       mjData.setHalfSpicyFrom(s);
   });
 
-
-  $scope.$watch('started', function(started){
-    if(!started){ return; }
-    /* confirm before exiting */
-    var confirmmsg="Have you save your game? You will lose your game progress unless you save it.";
-    window.onbeforeunload = function (e) {
-      e = e || window.event;
-
-      // For IE and Firefox prior to version 4
-      if (e) {
-          e.returnValue = confirmmsg;
-      }
-
-      // For Safari
-      return confirmmsg;
-    };
-  });
-  
 
   /* game started */
   var round;
