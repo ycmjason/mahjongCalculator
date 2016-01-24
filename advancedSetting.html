@@ -6,14 +6,14 @@
       <label class="radio-inline">
         <input type="radio"
                value="HalfChungStrategy"
-               ng-model="$parent.advancedSettings.chungStrategy">
+               ng-model="advancedSettings.chungStrategy">
         <?=$lang['chungness_half_chung']?>
       </label>
       <label class="radio-inline">
         <input type="radio"
                value="FullChungStrategy"
-               ng-model="$parent.advancedSettings.chungStrategy">
-        <?=$lang['chungness_full_chung']?> (<?$lang['hk_tradition']?>)
+               ng-model="advancedSettings.chungStrategy">
+        <?=$lang['chungness_full_chung']?> (<?=$lang['hk_tradition']?>)
       </label>
     </div>
   </div>
@@ -29,7 +29,7 @@
              onmouseover="$(this).tooltip()"> 
         <input type="radio"
                value="_25ChickenStrategy"
-               ng-model="$parent.advancedSettings.farnScoreStrategy">
+               ng-model="advancedSettings.farnScoreStrategy">
         <?=$lang['scoring_method_25Chicken']?> (<?=$lang['hk_tradition']?>)
       </label>
       <label class="radio-inline"
@@ -39,7 +39,7 @@
              onmouseover="$(this).tooltip()"> 
         <input type="radio"
                value="_51Strategy"
-               ng-model="$parent.advancedSettings.farnScoreStrategy">
+               ng-model="advancedSettings.farnScoreStrategy">
         <?=$lang['scoring_method_51']?>
       </label>
       <label class="radio-inline"
@@ -49,7 +49,7 @@
              onmouseover="$(this).tooltip()"> 
         <input type="radio"
                value="_12MosquitosStrategy"
-               ng-model="$parent.advancedSettings.farnScoreStrategy">
+               ng-model="advancedSettings.farnScoreStrategy">
                <?=$lang['scoring_method_12Mosquitos']?>
       </label>
     </div>
@@ -62,14 +62,14 @@
         <input type="radio"
                value="10000"
                ng-focus="halfSpicyFromCustomFocus=false"
-               ng-model="$parent.advancedSettings.halfSpicyFrom">
+               ng-model="advancedSettings.halfSpicyFrom">
         <?=$lang['half_spicy_from_never']?>
       </label>
       <label class="radio-inline">
         <input type="radio"
                value="4"
                ng-focus="halfSpicyFromCustomFocus=false"
-               ng-model="$parent.advancedSettings.halfSpicyFrom">
+               ng-model="advancedSettings.halfSpicyFrom">
         <?=$lang['half_spicy_from_4']?> (<?=$lang['hk_tradition']?>)
       </label>
         <input id="halfSpicyFromCustom"
@@ -77,11 +77,11 @@
                type="radio"
                value="custom"
                ng-checked="halfSpicyFromCustomFocus"
-               ng-model="$parent.advancedSettings.halfSpicyFrom">
+               ng-model="advancedSettings.halfSpicyFrom">
         <input type="text"
                size="3"
-               ng-focus="halfSpicyFromCustomFocus=true; $parent.advancedSettings.halfSpicyFrom='custom'"
-               ng-model="$parent.advancedSettings.halfSpicyFromCustom">
+               ng-focus="halfSpicyFromCustomFocus=true; advancedSettings.halfSpicyFrom='custom'"
+               ng-model="advancedSettings.halfSpicyFromCustom">
         </input>
     </div>
   </div>

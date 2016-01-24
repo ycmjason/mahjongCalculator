@@ -29,7 +29,7 @@ $lang = array(
   // advancedSetting.html
   "chungness"                    => "Chung-ness",
   "chungness_half_chung"         => "Half Chung",
-  "chungness_full_chung"         => "Full Chung"
+  "chungness_full_chung"         => "Full Chung",
   "hk_tradition"                 => "HK Tradition",
   "scoring_method"               => "Scoring method",
   "scoring_method_25Chicken"     => "25 Chicken",
@@ -41,6 +41,6 @@ $lang = array(
 
   //summaryTable.html
   "round"   => "Round",
-  "summary" => "Summary",
+  "summary" => "Summary"
 );
 ?>

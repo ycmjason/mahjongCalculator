@@ -28,8 +28,9 @@
 <!-- advanced setting -->
       <div class="panel panel-default"
            ng-show="advanced_setting_show">
-        <div class="panel-body"
-             ng-include="'./advancedSetting.html'"></div>
+        <div class="panel-body">
+          <?php include("./advancedSetting.html")?>
+        </div>
       </div>
     </form>
     <form class="form-inline">
@@ -149,7 +150,7 @@
     <form class="form-inline">
       <div class="form-group">
         <button class="btn btn-warning" type="button" ng-click="addPlayer()">
-          <span class="glyphicon glyphicon-plus"></span> <?=lang['add_game_button_msg']?>
+          <span class="glyphicon glyphicon-plus"></span> <?=$lang['add_game_button_msg']?>
         </button>
       </div>
     </form>
@@ -161,6 +162,6 @@
     </canvas> 
   </div>
   <div class="col-sm-12">
-    <div ng-include="'./summaryTable.html'"></div>
+    <?php include("./summaryTable.html"); ?>
   </div>
 </div>
