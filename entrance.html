@@ -4,17 +4,17 @@
   <div class="col-sm-8">
     <div class="form-inline">
       <div class="form-group">
-        <label> Join existing game</label>
+        <label><?=$lang['join_existing_game']?></label>
         <input type="text"
                maxlength="4"
                size="4"
                ng-model="code"
-               ng-keyup="joinGame()"
+               ng-keyup="showFailJoin=false; joinGame()"
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                class="form-control"
                placeholder="code"
                style="text-align:center;text-transform:lowercase;">
-         <span class="text-danger">{{codeErrorMsg}}</span>
+        <span class="text-danger" ng-show="showFailJoin"><?=$lang['failed_joining_game']?></span>
       </div>
     </div>
     <hr>
@@ -23,7 +23,7 @@
     <form>
       <!-- number of players -->
       <div class="form-group">
-        <label for="numberOfPlayer">Number of players</label>
+        <label for="numberOfPlayer"><?=$lang['number_of_players']?></label>
         <select id="numberOfPlayer" class="form-control" ng-model="numberOfPlayer">
           <option ng-repeat="n in range(DEFAULT_PLAYER, MAX_PLAYER)"
                   value="{{n}}"
@@ -34,7 +34,7 @@
       </div>
 <!-- player name, ng-repeat -->
       <div class="form-group" ng-repeat="i in range(1, numberOfPlayer)">
-        <label for="name{{i}}">Player {{i}}'s name</label>
+        <label for="name{{i}}"><?=$lang['player_n_name']?></label>
         <input class="form-control" id="name{{i}}" type="text" ng-model="playerNames[i-1]">
       </div>
 <!-- advanced settings -->
@@ -43,7 +43,7 @@
                 ng-click="advanced_setting_show=advanced_setting_show?false:true">
           <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
           <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
-          Advanced Settings
+          <?=$lang['advanced_setting']?>
         </button>
       </div>
 <!-- advanced settings -->
@@ -55,13 +55,13 @@
 
 <!-- start button -->
       <div class="btn-group">
-        <button class="btn btn-default" ng-click="submitAndStart()">Start the game</button>
+        <button class="btn btn-default" ng-click="submitAndStart()"><?=$lang['start_button_msg']?></button>
       </div>
 <!-- upload button -->
       <div class="btn-group">
         <label>
           <div class="btn btn-success">
-            <span class="glyphicon glyphicon-upload"></span> Upload game progress
+            <span class="glyphicon glyphicon-upload"></span> <?=$lang['upload_button_msg']?>
           </div>
           <input type="file" class="hidden" fileread="uploadJson"></input>
         </label>

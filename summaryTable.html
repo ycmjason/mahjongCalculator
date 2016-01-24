@@ -1,14 +1,14 @@
 <table class="table table-hover" style="margin-bottom:0;">
   <thead>
     <tr>
-      <th>Round</th>
+      <th><?=$lang['round']?></th>
       <th ng-repeat="player in mjData.players">
         {{player.name}}
       </th>
     </tr>
   </thead>
   <tr class="summaryTable_summary">
-    <td><strong>Summary</strong></td>
+    <td><strong><?=$lang['summary']?></strong></td>
     <td ng-repeat="player in mjData.players">
       <strong>
       {{mjData.getPlayerFinalScore(player.id)}}

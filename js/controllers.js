@@ -95,7 +95,7 @@ mjCal.controller('indexController', function ($scope, socket) {
     if($scope.code.length == 4) socket.emit('join game', $scope.code);
   }
   socket.on('[fail] join game', function(msg){
-    $scope.codeErrorMsg = msg;
+    $scope.showFailJoin = true;
   });
   socket.on('update mjData', function(mjData){
     if(MJData.isClean(mjData)){

@@ -2,7 +2,7 @@
   <div class="col-lg-5">
     <div class="form-inline">
       <div class="form-group">
-        <label>This game's code</label>
+        <label><?=this_game_code?></label>
         <input  type="text"
                 maxlength="4"
                 size="4"
@@ -22,7 +22,7 @@
                 ng-click="advanced_setting_show=advanced_setting_show?false:true">
           <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
           <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
-          Advanced Settings
+          <?=$lang['advanced_setting']?>
         </button>
       </div>
 <!-- advanced setting -->
@@ -36,7 +36,7 @@
       <div class="form-group">
         <a class="btn btn-success" href="{{mjData.toLink()}}" download="mjData.json">
         <span class="glyphicon glyphicon-download"></span>
-        Download game progress
+        <?=$lang['download_button_msg']?>
         </a>
       </div>
       <div class="form-group">
@@ -45,7 +45,7 @@
                 ng-click="cancelLastRound()"
                 ng-show="mjData.rounds.length>1">
           <span class="glyphicon glyphicon-remove-sign"></span>
-          Cancel last round
+          <?=$lang['cancel_last_round_button_msg']?>
         </button>
       </div>
       <div class="form-group">
@@ -53,7 +53,7 @@
                 type="button"
                 ng-click="resetRound()"
                 ng-show="someoneIsEating()">
-        Undo Eat
+          <?=$lang['undo_eat_button_msg']?>
         </button>
       </div>
     </form>
@@ -63,7 +63,7 @@
                 type="button"
                 ng-click="flush()">
           <span class="glyphicon glyphicon-tint"></span>
-          Flush game
+          <?=$lang['flush_game_button_msg']?>
         </button>
       </div>
     </form>
@@ -86,7 +86,7 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} farn</a></li>
+            <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} <?=$lang['farn']?></a></li>
           </ul>
         </div>
         <!-- selfTouch -->
@@ -95,12 +95,12 @@
                   type="button"
                   data-toggle="dropdown"
                   ng-show="isEating(player.id) && numberOfPeopleEating()==1">
-                  Self-touched
+            <?=$lang['self_touch']?>
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
             <li class="dropdown-header">
-            Losers:
+            <=$lang['losers']?>:
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 1)">
               <a href="#" ng-click="selfTouched(losers)">
@@ -122,12 +122,12 @@
                   type="button"
                   data-toggle="dropdown"
                   ng-show="isLosing(player.id)">
-                  Lose (out chung)
+            <?=$lang['out_chung_button_msg']?>
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
             <li class="dropdown-header">
-            Other losers:
+              <?=$lang['other_losers']?>:
             </li>
             <li ng-repeat="losers in getLoseMenu(player.id)">
               <a href="#" ng-click="lose([player.id].concat(losers))">
@@ -149,7 +149,7 @@
     <form class="form-inline">
       <div class="form-group">
         <button class="btn btn-warning" type="button" ng-click="addPlayer()">
-          <span class="glyphicon glyphicon-plus"></span> Add player
+          <span class="glyphicon glyphicon-plus"></span> <?=lang['add_game_button_msg']?>
         </button>
       </div>
     </form>
