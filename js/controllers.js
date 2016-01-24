@@ -170,11 +170,12 @@ mjCal.controller('indexController', function ($scope, socket) {
       mjData.rounds.pop();
   }
   $scope.getLoseMenu = function(playerId){
-    var menu = [];
     var n = 3-$scope.numberOfPeopleEating();
-    angular.extend(menu, $scope.getRestPlayers(playerId, n));
+    var menu = $scope.getRestPlayers(playerId, n);
     round.getWinners().forEach(function(winner){
-      angular.extend(menu, $scope.getRestPlayers(winner, n));
+      menu=menu.filter(function(losers){
+        return losers.indexOf(winner) == -1;
+      });
     });
     return menu.filter(function(losers){
       return losers.indexOf(playerId) == -1;

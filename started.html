@@ -87,6 +87,11 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
+            <li class="dropdown-header"><?=$lang['common_wunames']?></li>
+            <li><a href="#" ng-click="eat(player.id, 3)"><?=$lang['wunames_3farn']?> (3 <?=$lang['farn']?>)</a></li>
+            <li><a href="#" ng-click="eat(player.id, 7)"><?=$lang['wunames_7farn']?> (7 <?=$lang['farn']?>)</a></li>
+            <li><a href="#" ng-click="eat(player.id, 13)"><?=$lang['wunames_13farn']?> (13 <?=$lang['farn']?>)</a></li>
+            <li class="divider"></li>
             <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} <?=$lang['farn']?></a></li>
           </ul>
         </div>
@@ -112,7 +117,7 @@
               <a href="#" ng-click="selfTouched(losers)">
                 {{mjData.players[losers[0]].name}},
                 {{mjData.players[losers[1]].name}},
-                {{mjData.players[losers[2]].name}},
+                {{mjData.players[losers[2]].name}}
               </a>
             </li>
           </ul>
@@ -122,7 +127,7 @@
           <button class="btn btn-default dropdown-toggle"
                   type="button"
                   data-toggle="dropdown"
-                  ng-show="isLosing(player.id)">
+                  ng-show="isLosing(player.id) && numberOfPeopleEating()<3">
             <?=$lang['out_chung_button_msg']?>
             <span class="caret"></span>
           </button>
@@ -137,13 +142,11 @@
               </a>
             </li>
           </ul>
-<!-- TODO: to be added back
           <button class="btn btn-default"
-                  ng-click="lose([player])"
-                  ng-show="isLosing(player.id)">
-                  Lose
+                  ng-click="lose([player.id])"
+                  ng-show="isLosing(player.id) && numberOfPeopleEating()==3">
+            <?=$lang['out_chung_button_msg']?>
           </button>
--->
         </div>
       </form>
     </div>
