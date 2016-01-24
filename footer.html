@@ -1,18 +1,22 @@
-<div class="text-right">
-  <p>
-    <a href="./?lang=chinglish">Chinglish</a> ／
-    <a href="./?lang=traditional_chinese">繁體中文</a>
-  </p>
-  <em>
-    <div>
-      This project is open source. Available on
-      <a href="https://github.com/ycmjason/mahjongCalculator" target="_blank">github</a>.
-    </div>
-    <div>
-      All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.
-    </div>
-    <div>
-      <small><u>current version <?=$VERSION?></u></small>
-    </div>
-  </em>
+<div class="row">
+  <div class="col-md-6">
+    <p ng-show="!started">
+      <a href="./?lang=traditional_chinese">繁體中文</a> |
+      <a href="./?lang=chinglish">Chinglish</a>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <em class="text-right">
+      <div>
+        This project is open source. Available on
+        <a href="https://github.com/ycmjason/mahjongCalculator" target="_blank">github</a>.
+      </div>
+      <div>
+        All built from scratch by <a href="//facebook.com/ycm.jason" target="_blank">Jason Yu</a> &copy;.
+      </div>
+      <div>
+        <small><u>current version <?=$VERSION?></u></small>
+      </div>
+    </em>
+  </div>
 </div>
