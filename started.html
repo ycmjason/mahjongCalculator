@@ -2,7 +2,7 @@
   <div class="col-lg-5">
     <div class="form-inline">
       <div class="form-group">
-        <label><?=this_game_code?></label>
+        <label><?=$lang['this_game_code']?></label>
         <input  type="text"
                 maxlength="4"
                 size="4"
@@ -83,7 +83,7 @@
                   type="button"
                   data-toggle="dropdown"
                   ng-disabled="isEating(player.id) || numberOfPeopleEating()==3">
-                  {{isEating(player.id)?"Eating "+numberOfFarnEating(player.id)+" farn":"Eat"}}
+                  {{isEating(player.id)?"<?=$lang['eating']?> "+numberOfFarnEating(player.id)+" <?=$lang['farn']?>":"<?=$lang['eat']?>"}}
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
@@ -101,7 +101,7 @@
           </button>
           <ul class="dropdown-menu">
             <li class="dropdown-header">
-            <=$lang['losers']?>:
+            <?=$lang['losers']?>:
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 1)">
               <a href="#" ng-click="selfTouched(losers)">
