@@ -87,11 +87,6 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li class="dropdown-header"><?=$lang['common_wunames']?></li>
-            <li><a href="#" ng-click="eat(player.id, 3)"><?=$lang['wunames_3farn']?> (3 <?=$lang['farn']?>)</a></li>
-            <li><a href="#" ng-click="eat(player.id, 7)"><?=$lang['wunames_7farn']?> (7 <?=$lang['farn']?>)</a></li>
-            <li><a href="#" ng-click="eat(player.id, 13)"><?=$lang['wunames_13farn']?> (13 <?=$lang['farn']?>)</a></li>
-            <li class="divider"></li>
             <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} <?=$lang['farn']?></a></li>
           </ul>
         </div>
