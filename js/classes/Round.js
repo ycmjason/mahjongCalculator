@@ -37,7 +37,7 @@ function Round()/* (round, settings) or (settings) */{
                                              _round.didOutChung(playerId));
         }).reduce(function(s1, s2){
           return s1+s2;
-        });
+        }, 0);
     }else{
       return 0;
     }
