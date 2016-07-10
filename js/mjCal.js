@@ -1,6 +1,10 @@
 var mjCal = angular.module('mjCal', ['chart.js', 'btford.socket-io']);
 
-mjCal.constant('socketURL', '//socket.mahjongcalculator.ycmjason.com');
+if(window.location.protocol == "http:"){
+  mjCal.constant('socketURL', 'http://socket.mahjongcalculator.ycmjason.com');
+}else{
+  mjCal.constant('socketURL', 'https://mahjongcalculatorsocket.herokuapp.com');
+}
 
 mjCal.config(['$compileProvider', function ($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data):/);
