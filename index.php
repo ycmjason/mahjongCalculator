@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 require_once("version.php");
 require_once("language/lang.inc.php");
