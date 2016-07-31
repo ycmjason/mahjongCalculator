@@ -36,6 +36,7 @@ array_push($js_resources, "./js/controllers.js");
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.chartjs/0.8.7/angular-chart.min.css">
     <!-- angular is included in head for ng-cloak to work properly! -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
   </head>
@@ -59,7 +60,7 @@ array_push($js_resources, "./js/controllers.js");
     </section>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
-    <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+    <script src="//cdn.jsdelivr.net/angular.chartjs/0.8.7/angular-chart.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <?php foreach($js_resources as $js_resource){?>
     <script src="<?=$js_resource?>"></script>
