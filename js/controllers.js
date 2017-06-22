@@ -130,12 +130,8 @@ mjCal.controller('indexController', function ($scope, socket) {
 
 
   $scope.submitAndStart = function(){
-    // close the advanced setting
-    $scope.advanced_setting_show = false;
-
-    // add players
-    for(var i=0; i<$scope.numberOfPlayer; i++){
-      mjData.addPlayer($scope.playerNames[i] || '');
+    for(var i=0; i<4; i++){
+      mjData.addPlayer('');
     };
     // for initial states (all player with 0 scores)
     resetRound(); saveRound();

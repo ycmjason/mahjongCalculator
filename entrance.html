@@ -22,39 +22,6 @@
 
 
     <form>
-      <!-- number of players -->
-      <div class="form-group">
-        <label for="numberOfPlayer"><?=$lang['number_of_players']?></label>
-        <select id="numberOfPlayer" class="form-control" ng-model="numberOfPlayer">
-          <option ng-repeat="n in range(DEFAULT_PLAYER, MAX_PLAYER)"
-                  value="{{n}}"
-                  ng-selected="n==DEFAULT_PLAYER">
-            {{n}}
-          </option>
-        </select>
-      </div>
-<!-- player name, ng-repeat -->
-      <div class="form-group" ng-repeat="i in range(1, numberOfPlayer)">
-        <label for="name{{i}}"><?=$lang['player_n_name']?></label>
-        <input class="form-control" id="name{{i}}" type="text" ng-model="playerNames[i-1]">
-      </div>
-<!-- advanced settings -->
-      <div class="form-group">
-        <button class="btn btn-primary"
-                ng-click="advanced_setting_show=advanced_setting_show?false:true">
-          <span ng-hide="advanced_setting_show" class="glyphicon glyphicon-chevron-down"></span>
-          <span ng-show="advanced_setting_show" class="glyphicon glyphicon-chevron-up"></span>
-          <?=$lang['advanced_setting']?>
-        </button>
-      </div>
-<!-- advanced settings -->
-      <div class="panel panel-default"
-           ng-show="advanced_setting_show">
-        <div class="panel-body">
-          <?php include("./advancedSetting.html")?>
-        </div>
-      </div>
-
 <!-- start button -->
       <div class="btn-group">
         <button class="btn btn-default" ng-click="submitAndStart()"><?=$lang['start_button_msg']?></button>
