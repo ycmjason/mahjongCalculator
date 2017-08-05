@@ -3,6 +3,7 @@
 $lang = array(
   "farn" => "番",
   "self_touch" => "自摸",
+  "bao_self_touch" => "包自摸",
   // index.php
   "title"                        => "麻雀計分器",
 

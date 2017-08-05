@@ -3,6 +3,7 @@
 $lang = array(
   "farn" => "farn",
   "self_touch" => "Self-touch",
+  "bao_self_touch" => "Bao self-touch",
   // index.php
   "title"                        => "Mahjong Score Calculator",
 

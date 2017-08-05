@@ -105,7 +105,7 @@
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 1)">
               <a href="#" ng-click="selfTouched(losers)">
-                {{mjData.players[losers[0]].name}}
+                {{mjData.players[losers[0]].name}} (<?=$lang['bao_self_touch']?>)
               </a>
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 3)">
