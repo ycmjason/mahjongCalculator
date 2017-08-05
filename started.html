@@ -35,10 +35,12 @@
     </form>
     <form class="form-inline">
       <div class="form-group">
-        <a class="btn btn-success" href="{{mjData.toLink()}}" download="mjData.json">
-        <span class="glyphicon glyphicon-download"></span>
-        <?=$lang['download_button_msg']?>
-        </a>
+        <button class="btn btn-default"
+                type="button"
+                ng-click="flush()">
+          <span class="glyphicon glyphicon-tint"></span>
+          <?=$lang['flush_game_button_msg']?>
+        </button>
       </div>
       <div class="form-group">
         <button class="btn btn-primary"
@@ -49,22 +51,14 @@
           <?=$lang['cancel_last_round_button_msg']?>
         </button>
       </div>
+    </form>
+    <form class="form-inline">
       <div class="form-group">
         <button class="btn btn-primary"
                 type="button"
                 ng-click="resetRound()"
-                ng-show="someoneIsEating()">
+                ng-disabled="!someoneIsEating()">
           <?=$lang['undo_eat_button_msg']?>
-        </button>
-      </div>
-    </form>
-    <form class="form-inline">
-      <div class="form-group">
-        <button class="btn btn-default"
-                type="button"
-                ng-click="flush()">
-          <span class="glyphicon glyphicon-tint"></span>
-          <?=$lang['flush_game_button_msg']?>
         </button>
       </div>
     </form>
