@@ -87,7 +87,7 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#" ng-click="eat(player.id, farn)">{{farn}} <?=$lang['farn']?></a></li>
+            <li ng-repeat="farn in range(MIN_MAX_FARN, MAX_MAX_FARN)"><a href="#!" ng-click="eat(player.id, farn)">{{farn}} <?=$lang['farn']?></a></li>
           </ul>
         </div>
         <!-- selfTouch -->
@@ -104,12 +104,12 @@
             <?=$lang['losers']?>:
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 1)">
-              <a href="#" ng-click="selfTouched(losers)">
+              <a href="#!" ng-click="selfTouched(losers)">
                 {{mjData.players[losers[0]].name}} (<?=$lang['bao_self_touch']?>)
               </a>
             </li>
             <li ng-repeat="losers in getRestPlayers(player.id, 3)">
-              <a href="#" ng-click="selfTouched(losers)">
+              <a href="#!" ng-click="selfTouched(losers)">
                 {{mjData.players[losers[0]].name}},
                 {{mjData.players[losers[1]].name}},
                 {{mjData.players[losers[2]].name}}
@@ -131,7 +131,7 @@
               <?=$lang['other_losers']?>:
             </li>
             <li ng-repeat="losers in getLoseMenu(player.id)">
-              <a href="#" ng-click="lose([player.id].concat(losers))">
+              <a href="#!" ng-click="lose([player.id].concat(losers))">
                 {{mjData.players[losers[0]].name}}{{losers.length>1?',':''}}
                 {{mjData.players[losers[1]].name}}
               </a>
